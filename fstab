@@ -1,0 +1,8 @@
+proc            /proc           proc    defaults          0       0
+PARTUUID=d846c2f4-01  /boot           vfat    defaults          0       2
+PARTUUID=d846c2f4-02  /               ext4    defaults,noatime  0       1
+# a swapfile is not a swap partition, no line here
+#   use  dphys-swapfile swap[on|off]  for that
+//192.168.1.71/share /cfloor cifs username=rlee,password=38283828 0 0
+/dev/sda1 /share ext2 rw,relatime,block_validity,barrier,user_xattr,acl 0 0
+

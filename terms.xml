@@ -1,0 +1,2747 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+	<term>
+		<definition>Important Steps</definition>
+		<comment>
+			<ul>
+				<li>Problem Solving Tools
+					<ul>
+					<li style="color:red">Brainstorming</li>
+					<li style="color:red">Flow Charts</li>
+					<li style="color:red">whys</li>
+					<li style="color:red">Fishbone/Cause and Effect Diagram</li>
+					<li style="color:red">Pareto analysis</li>
+					<li style="color:red">Dot Plots and Scatter diagrams</li>
+					<li style="color:Green">Affinity Diagrams</li>
+					<li style="color:Green">Force field Analysis</li>
+					<li style="color:Green">Tree Diagrams</li>
+					<li style="color:Green">Priorization Matrices</li>
+					<li style="color:Green">Nominal Group Techniques</li> 
+                    </ul>
+                </li>
+			</ul>
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:network setup file:</definition>
+		<comment>
+			<table>
+				<tr>
+					<th>/etc/sysconfig/network-scripts/ifcfg-eth0</th>
+					<td>
+						TYPE="Ethernet"  <br>
+						BOOTPROTO=none <br>
+						DEFROUTE="yes" <br>
+						IPV4_FAILURE_FATAL="no" <br>
+						IPV6INIT="yes" <br>
+						IPV6_AUTOCONF="yes" <br>
+						IPV6_DEFROUTE="yes" <br>
+						IPV6_FAILURE_FATAL="no" <br>
+						NAME="enp6s0f1" <br>
+						UUID="77895ded-ff8e-434f-a3fe-6a15f6ef8a38" <br>
+						ONBOOT="yes" <br>
+						PREFIX0=23 <br>
+						GATEWAY0=10.25.65.1 <br>
+						DNS1=10.30.10.23 <br>
+						DNS2=10.229.12.254 <br>
+						HWADDR=00:25:90:F0:F1:E1 <br>
+						IPADDR0=10.25.65.155 <br>
+						IPV6_PEERDNS=yes <br>
+						IPV6_PEERROUTES=yes <br>
+					</td>
+				</tr>
+			</table>
+		</comment>
+	</term>
+	<term>
+		<definition>Network: adding a remote network into your route group</definition>
+		<comment>route add -net 172.16.48.0 netmask 255.255.255.0 gw 10.25.64.1</comment>
+	</term>
+	<term>
+		<definition>Linux Installation:Ubuntu|SuSE|RedHat</definition>
+		<comment>
+			<ul>
+				<li>Desktop setup steps <br>
+				    <ol>
+					   <li>sudo bash</li>
+                        <li>sudo passwd</li>
+					   <li>apt-get install build-essential</li>
+                        <li>dpkg -i *.deb</li>
+					   <li>apt-get install ubuntu-desktop</li>
+				    </ol>
+                </li>
+				<li><h4>Installation of RedHat with HBA driver</h4><br>
+						1) To have Redhat prompt you for the driver disk in UEFI mode, at the text menu screen press ?e? then add ?linux dd? at the end of the first line (kernel /images/pxeboot?)<br>
+						2) Then press ?b? to boot
+
+				</li>
+				<li><h4>Installation of SLES with HBA driver</h4><br>
+When installing SLES in UEFI mode you don?t get the usual graphical boot screen (where you can press F6 to load the controller?s driver), you?d get a text boot menu.  <br>
+So in order to load the driver you need to edit the ?Installation? boot entry. Highlight the entry and press ?E?, you then get something like this: <br>
+
+setparams 'Installation' <br>
+
+  &nbsp&nbsp&nbspset gfxpayload=keep <br>
+  &nbsp&nbsp&nbspecho 'Loading kernel ...' <br>
+  &nbsp&nbsp&nbsplinuxefi /boot/x86_64/loader/linux <br>
+  &nbsp&nbsp&nbspecho 'Loading initial ramdisk ...' <br>
+  &nbsp&nbsp&nbspinitrdefi /boot/x86_64/loader/initrd <br>
+
+	  1) Add in a space and the parameter ?dud=1? at the end of the line starting with ?linuxefi? (RedHat?s equivalent is ?linux dd?) <br>
+	  2) If 1) does not work use this as parameter ?brokenmodules=aacraid dud=1?<br>
+	3) If 2) does not work then still use 2), after you see the welcome screen, <br>
+		switch to f2 screen, run this line as command: ?insmod ./update/000/modules/aacraid.ko?<br>
+		switch back to welcome screen and continue the installation procedure.
+So it looks like this: ?linuxefi /boot/x86_64/loader/linux [string from 1 or 2 or 3]? then just press F10 (or Ctrl-X) to boot and start the installation. It?d then prompt you for the driver(Welcome screen).  <br>
+
+				</li>
+				<li><h4>Installation of Ubuntu with HBA driver</h4><br>
+This procedure installs the aacraid driver while installing Ubuntu Server 14.04.2 64bit <br>
+
+1. Copy "aacraid.ko" to a floppy disk or USB flash.  <br>
+
+2. Start installing Ubuntu 14.04.2 Server Linux by booting from the installation CD select Install Ubuntu Server, <br>
+   Press CTRL+ALT+F2 to switch to console2 while Ubuntu detects the network.  <br>
+
+3. Insert your USB key or floppy disk <br>
+
+4. Run parted_devices command (scan for device, assume if USB drive is assigned to /dev/sda1) <br>
+
+5. Type the following commands: <br>
+	&nbsp&nbsp&nbsp# mkdir /mnt2  /AACRAID <br>
+	&nbsp&nbsp&nbsp# mount /dev/sda1 /mnt2 <br>
+	&nbsp&nbsp&nbsp# cp -R /mnt2/* /AACRAID <br>
+	&nbsp&nbsp&nbsp# umount /mnt2 <br>
+
+6. *** Please remove the USB flash before the insmod command *** <br>
+
+	7. 
+	&nbsp&nbsp&nbsp# modprobe -r aacraid <br>
+   &nbsp&nbsp&nbsp# cp -f /AACRAID/aacraid.ko /lib/modules/3.16.0-30-generic/kernel/drivers/scsi/aacraid/aacraid.ko <br>
+   &nbsp&nbsp&nbsp# insmod /lib/modules/3.16.0-30-generic/kernel/drivers/scsi/aacraid/aacraid.ko <br>
+
+8. Press CTRL+ALT+F1 to return to installer. Continue the installation as usual. !!! READ STEP 9 NOW !!!  <br>
+
+9. Do not reboot after the installation is complete. Press CTRL+ALT+F2 to <br>
+   &nbsp&nbsp&nbspswitch to console 2 again.  <br>
+
+10. Type the following commands: <br>
+	&nbsp&nbsp&nbsp# cp -f /AACRAID/aacraid.ko /target/lib/modules/3.16.0-30-generic/kernel/drivers/scsi/aacraid/aacraid.ko <br>
+	&nbsp&nbsp&nbsp# chroot /target <br>
+	&nbsp&nbsp&nbsp# /sbin/depmod -a 3.16.0-30-generic <br>
+	&nbsp&nbsp&nbsp# update-initramfs -u -v <br>
+	&nbsp&nbsp&nbsp# exit <br>
+
+11. Press CTRL+ALT+F1 to return to the installer. Reboot to complete the installation.  <br>
+				</li>
+				<li>xfs support<br>
+				<ol>
+					<li>apt-get install xfsprogs</li>
+					<li>parted /dev/md0<br>
+					<ul>
+						<li>mklabel gpt</li>
+						<li>mkpart primary xfs 0 -0</li>
+						<li>quit</li></ul>
+					<li>mkfs.xfs -L /files /dev/md0p1</li></ol>
+				</li>
+			</ul>
+			(tipped from Wolf and Raghava)
+		</comment>
+	</term>
+	<term>
+		<definition>IE shortcut keys To view and explore Web pages</definition>
+		<comment>
+			<table>
+				<tr><td>Display Internet Explorer Help or to display context Help about an item in a dialog box</td><th>F1</th></tr>
+				<tr><td>Toggle between full-screen and other views in the browser.</td><th>F11</th></tr>
+				<tr><td>Move forward through the items on a Web page, the Address box, or the Links box</td><th> TAB</th></tr> 
+				<tr><td> Move through the items on a Web page, the Address box, or the Links box</td><th> SHIFT-TAB</th> </tr>
+				<tr><td> Go to your Home page </td><th> ALT-HOME</th>  </tr>
+				<tr><td> Go to the next page </td><th> ALT-RightArrow</th> </tr>
+				<tr><td> Go to the previous page</td><th>ALT-LeftArrow or BackSpace </th></tr> 
+				<tr><td> Display a shortcut menu for a link   </td><th>     SHIFT+F10 </th></tr> 
+				<tr><td> Move forward between frames   </td><th>            CTRL+TAB or F6</th></tr> 
+				<tr><td>  Move back between frames   </td><th>               SHIFT+CTRL+TAB</th></tr> 
+				<tr><td> Scroll toward the beginning of a  document </td><th>      UP ARROW</th></tr> 
+				<tr><td> Scroll toward the end of a document    </td><th>   DOWN ARROW</th></tr> 
+				<tr><td> Scroll toward the beginning of a document in larger increments </td><th>       PAGE UP</th></tr> 
+				<tr><td> Scroll toward the end of a document in larger increments </td><th>     PAGE DOWN</th></tr> 
+				<tr><td> Move to the beginning of a document </td><th>      HOME</th></tr> 
+				<tr><td> Move to the end of a document     </td><th>        END</th></tr> 
+				<tr><td> Find on this page    </td><th>                     CTRL+F</th></tr> 
+				<tr><td> Refresh the current Web page     </td><th>         F5 or CTRL+R</th></tr> 
+				<tr><td> Refresh the current page, <br>even if the time stamp for the Web version and your locally stored version are the same </td><th> CTRL+F5</th></tr> 
+				<tr><td> Stop downloading a page       </td><th>            ESC</th></tr> 
+				<tr><td> Go to a new location         </td><th>             CTRL+O or CTRL+L</th></tr> 
+				<tr><td> Open a new window        </td><th>                 CTRL+N</th></tr> 
+				<tr><td> Close the current window     </td><th>             CTRL+W</th></tr> 
+				<tr><td> Save the current page      </td><th>               CTRL+S</th></tr> 
+				<tr><td> Print the current page or active frame </td><th>   CTRL+P</th></tr> 
+				<tr><td> Activate a selected link     </td><th>             ENTER</th></tr> 
+				<tr><td> Open the Search box      </td><th>                 CTRL+E</th></tr> 
+				<tr><td> Open the Favorites box    </td><th>                CTRL+I</th></tr> 
+				<tr><td> Open the History box        </td><th>              CTRL+H</th></tr> 
+				<tr><td> In the History or Favorites boxes,   open multiple folders </td><th>    CTRL+click</th></tr> 
+			</table>
+		</comment>
+	</term>
+	<term>
+		<definition>VIM CheatSheet</definition>
+		<comment>
+			<table width="100%" border=3>
+				<tr>
+					<th>How to Exit</th>
+					<td>
+			<table width="100%" border=3>
+				<tr>
+					<td>:q[uit]</td>
+					<td>Quit Vim.  This fails when changes have been made.</td>
+				</tr>
+				<tr>
+					<td>:q[uit]!</td>
+					<td>Quit without writing.</td>
+				</tr>
+				<tr>
+					<td>:cq[uit]</td>
+					<td>Quit always, without writing.</td>
+				</tr>
+				<tr>
+					<td>:wq</td>
+					<td>Write the current file and exit.</td>
+				</tr>
+				<tr>
+					<td>:wq!</td>
+					<td>Write the current file and exit always.</td>
+				</tr>
+  <tr>
+    <td>:wq {file}</td>
+    <td>Write to {file}.  Exit if not editing the last</td>
+  </tr>
+  <tr>
+    <td>:wq! {file}</td>
+    <td>Write to {file} and exit always.</td>
+  </tr>
+  <tr>
+    <td>:[range]wq[!]</td>
+    <td>[file]  Same as above, but only write the lines in [range].</td>
+  </tr>
+  <tr>
+    <td>ZZ</td>
+    <td>Write current file, if modified, and exit.</td>
+  </tr>
+  <tr>
+    <td>ZQ</td>
+    <td>Quit current file and exit (same as ":q!").</td>
+  </tr>
+</table>
+</td>
+</tr>
+<tr><th>Editing a File </th>
+	<td>
+<table width="100%" border=3>
+  <tr>
+    <td>:e[dit]</td>
+    <td>Edit the current file.  This is useful to re-edit the current file, when it has been changed outside of Vim.</td>
+  </tr>
+  <tr>
+    <td>:e[dit]!</td>
+    <td>Edit the current file always.  Discard any changes to the current buffer.  This is useful if you want to start all over again.</td>
+  </tr>
+
+  <tr>
+    <td>:e[dit] {file}</td>
+    <td>Edit {file}.  </td>
+  </tr>
+  <tr>
+    <td>:e[dit]! {file}</td>
+    <td>Edit {file} always.  Discard any changes to the current buffer.</td>
+  </tr>
+  <tr>
+    <td>:%!xxd</td>
+    <td>Edit current file in hex-text mode, easier for human.</td>
+  </tr>
+  <tr>
+    <td>:%!xxd -r</td>
+    <td>Edit current file in hex mode, prepare to save the file.</td>
+  </tr>
+  <tr>
+    <td>gf</td>
+    <td>Edit the file whose name is under or after the cursor.  Mnemonic: "goto file".</td>
+  </tr>
+</table>
+	</td></tr>
+	<tr><th>Inserting Text </th>
+		<td>
+<table width="100%" border=3>
+  <tr>
+    <td>a</td>
+    <td>Append text after the cursor [count] times.</td>
+  </tr>
+  <tr>
+    <td>A</td>
+    <td>Append text at the end of the line [count] times.</td>
+  </tr>
+  <tr>
+    <td>i</td>
+    <td>Insert text before the cursor [count] times.</td>
+  </tr>
+  <tr>
+    <td>I</td>
+    <td>Insert text before the first non-blank in the line [count] times.</td>
+  </tr>
+  <tr>
+    <td>gI</td>
+    <td>Insert text in column 1 [count] times.</td>
+  </tr>
+  <tr>
+    <td>o</td>
+    <td>Begin a new line below the cursor and insert text, repeat [count] times.</td>
+  </tr>
+  <tr>
+    <td>O</td>
+    <td>Begin a new line above the cursor and insert text, repeat [count] times.</td>
+  </tr>
+</table>
+		</td></tr>
+		<tr><th>Inserting a file </th>
+		<td>
+<table width="100%" border=3>
+  <tr>
+    <td>:r[ead] [name]</td>
+    <td>Insert the file [name] below the cursor.</td>
+  </tr>
+  <tr>
+    <td>:r[ead] !{cmd}</td>
+    <td>Execute {cmd} and insert its standard output below the cursor. </td>
+  </tr>
+</table>
+		</td></tr>
+	<tr><th>Deleting Text  
+	</th>
+	<td>
+<table width="100%" border=3>
+  <tr>
+    <td>&lt;Del&gt; or<br> x</td>
+    <td>Delete [count] characters under and after the cursor</td>
+  </tr>
+  <tr>
+    <td>X</td>
+    <td>Delete [count] characters before the cursor</td>
+  </tr>
+  <tr>
+    <td>d{motion}</td>
+    <td>Delete text that {motion} moves over </td>
+  </tr>
+  <tr>
+    <td>dd</td>
+    <td>Delete [count] lines</td>
+  </tr>
+  <tr>
+    <td>D</td>
+    <td>Delete the characters under the cursor until the end of the line</td>
+  </tr>
+  <tr>
+    <td>{Visual}x  or<br> {Visual}d</td>
+    <td>Delete the highlighted text (for {Visual} see <a href=#select>Selecting Text</a>).</td>
+  </tr>
+  <tr>
+    <td>{Visual}CTRL-H   or<br> {Visual}<BS></td>
+    <td>When in Select mode: Delete the highlighted text</td>
+  </tr>
+  <tr>
+    <td>{Visual}X  or<br> {Visual}D</td>
+    <td>Delete the highlighted lines </td>
+  </tr>
+  <tr>
+    <td>:[range]d[elete]</td>
+    <td>Delete [range] lines (default: current line)</td>
+  </tr>
+  <tr>
+    <td>:[range]d[elete] {count}</td>
+    <td>Delete {count} lines, starting with [range]</td>
+  </tr>
+</table>
+	</td></tr>
+	<tr><th>Replacing Text  
+	</th>
+	<td>
+<table width="100%" border=3>
+  <tr>
+    <td>r{char}</td>
+    <td>replace the character under the cursor with {char}.</td>
+  </tr>
+  <tr>
+    <td>R</td>
+    <td>Enter Insert mode, replacing characters rather than inserting</td>
+  </tr>
+  <tr>
+    <td>~</td>
+    <td>Switch case of the character under the cursor and move the cursor to the right.  If a [count] is given, do that many characters.</td>
+  </tr>
+  <tr>
+    <td>~{motion}</td>
+    <td>switch case of {motion} text.</td>
+  </tr>
+  <tr>
+    <td>{Visual}~</td>
+    <td>Switch case of highlighted text</td>
+  </tr>
+</table>
+	</td></tr>
+	<tr><th>Substituting  
+	</th>
+	<td>
+<table width="100%" border=3>
+  <tr>
+    <td>:[range]s[ubstitute]/{pattern}/{string}/[c][e][g][p][r][i][I] [count]</td>
+    <td>For each line in [range] replace a match of {pattern} with
+    {string}.</td>
+  </tr>
+  <tr>
+    <td>:[range]s[ubstitute] [c][e][g][r][i][I] [count] :[range]&[c][e][g][r][i][I] [count]</td>
+	<td>Repeat last :substitute with same search pattern and substitute string, but without the same flags.  You may add extra flags.
+	</td>
+  </tr>
+</table>
+<pre>
+The arguments that you can use for the substitute commands:
+[c]  Confirm each substitution.  Vim positions the cursor on the matching
+  string.  You can type:
+      'y'      to substitute this match
+      'n'      to skip this match
+      <Esc>   to skip this match
+      'a'      to substitute this and all remaining matches {not in Vi}
+      'q'      to quit substituting {not in Vi}
+      CTRL-E  to scroll the screen up {not in Vi}
+      CTRL-Y  to scroll the screen down {not in Vi}.
+[e]     When the search pattern fails, do not issue an error message and, in
+  particular, continue in maps as if no error occurred.  
+[g]  Replace all occurrences in the line.  Without this argument,
+  replacement occurs only for the first occurrence in each line.
+[i]  Ignore case for the pattern.  
+[I]  Don't ignore case for the pattern.  
+[p]  Print the line containing the last substitute.
+</pre>
+	</td></tr>
+	<tr><th>Copying and Moving Text  
+	</th>
+	<td>
+<table width="100%" border=3>
+  <tr>
+    <td>"{a-zA-Z0-9.%#:-"}</td>
+	<td>Use register {a-zA-Z0-9.%#:-"} for next delete,<br> yank or put (use uppercase character to append with delete and yank) ({.%#:} only work with put).</td>
+  </tr>
+  <tr>
+    <td>:reg[isters]</td>
+    <td>Display the contents of all numbered and named registers.</td>
+  </tr>
+  <tr>
+    <td>:reg[isters] {arg}</td>
+    <td>Display the contents of the numbered and named registers that are mentioned in {arg}.  </td>
+  </tr>
+  <tr>
+    <td>:di[splay] [arg]</td>
+    <td>Same as :registers. </td>
+  </tr>
+  <tr>
+    <td>["x]y{motion}</td>
+    <td>Yank {motion} text [into register x].</td>
+  </tr>
+  <tr>
+    <td>["x]yy</td>
+    <td>Yank [count] lines [into register x]</td>
+  </tr>
+  <tr>
+    <td>["x]Y</td>
+    <td>yank [count] lines [into register x] (synonym for yy).</td>
+  </tr>
+  <tr>
+    <td>{Visual}["x]y</td>
+    <td>Yank the highlighted text [into register x] (for {Visual} see <a href=#select>Selecting Text</a>).</td>
+  </tr>
+  <tr>
+    <td>{Visual}["x]Y</td>
+    <td>Yank the highlighted lines [into register x]</td>
+  </tr>
+  <tr>
+    <td>:[range]y[ank] [x]</td>
+    <td>Yank [range] lines [into register x].</td>
+  </tr>
+  <tr>
+    <td>:[range]y[ank] [x] {count}</td>
+    <td>Yank {count} lines, starting with last line number in [range] (default: current line), [into register x].</td>
+  </tr>
+  <tr>
+    <td>["x]p</td>
+    <td>Put the text [from register x] after the cursor [count] times.</td>
+  </tr>
+  <tr>
+    <td>["x]P</td>
+    <td>Put the text [from register x] before the cursor [count] times.</td>
+  </tr>
+  <tr>
+    <td>["x]gp</td>
+    <td>Just like "p", but leave the cursor just after the new text.</td>
+  </tr>
+  <tr>
+    <td>["x]gP</td>
+    <td>Just like "P", but leave the cursor just after the new text.</td>
+  </tr>
+  <tr>
+    <td>:[line]pu[t] [x]</td>
+    <td>Put the text [from register x] after [line] (default current
+    line).</td>
+  </tr>
+  <tr>
+    <td>:[line]pu[t]! [x]</td>
+    <td>Put the text [from register x] before [line] (default current
+    line).</td>
+  </tr>
+</table>
+	</td></tr>
+	<tr><th>Undo/Redo/Repeat  
+	</th>
+	<td>
+<table width="100%" border=3>
+  <tr>
+    <td>u</td>
+    <td>Undo [count] changes. </td>
+  </tr>
+  <tr>
+    <td>:u[ndo]</td>
+    <td>Undo one change. </td>
+  </tr>
+  <tr>
+    <td>CTRL-R</td>
+    <td>Redo [count] changes which were undone. </td>
+  </tr>
+  <tr>
+    <td>:red[o]</td>
+    <td>Redo one change which was undone. </td>
+  </tr>
+  <tr>
+    <td>U</td>
+    <td>Undo all latest changes on one line.  {Vi: while not moved off of
+    it}</td>
+  </tr>
+  <tr>
+    <td>.</td>
+    <td>Repeat last change, with count replaced with [count].</td>
+  </tr>
+</table>
+	</td></tr>
+	<tr><th>Moving Around 
+	</th>
+	<td>
+<pre>
+Basic motion commands:
+
+        k              (up)
+      h   l      (left)    (right)
+        j             (down)
+</pre>
+
+<table width="100%" border=3>
+  <tr>
+    <td>h  or<br> <Left></td>
+    <td>[count] characters to the left (exclusive).</td>
+  </tr>
+  <tr>
+    <td>l or<br> <Right> or<br> <Space></td>
+    <td>[count] characters to the right (exclusive).</td>
+  </tr>
+  <tr>
+    <td>k  or<br> <Up> or<br> CTRL-P</td>
+    <td>[count] lines upward</td>
+  </tr>
+  <tr>
+    <td>j or<br> <Down> or<br> CTRL-J or<br> <NL> or<br> CTRL-N</td>
+    <td>[count] lines downward (linewise).</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>To the first character of the line (exclusive). </td>
+  </tr>
+  <tr>
+    <td>&lt;Home&gt;</td>
+    <td>To the first character of the line (exclusive). </td>
+  </tr>
+  <tr>
+    <td>^</td>
+    <td>To the first non-blank character of the line</td>
+  </tr>
+  <tr>
+    <td>$  or<br> &lt;End&gt;</td>
+    <td>To the end of the line and [count - 1] lines downward</td>
+  </tr>
+  <tr>
+    <td>g0 or<br> g&lt;Home&gt;</td>
+		<td>
+			<ul>
+				<li>
+					<p>When lines wrap ('wrap on): To the first character of the screen line (exclusive).</p>
+					<p>  Differs from "0" when a line is wider than the screen.</p>  
+				</li>
+				<li>
+					<p>When lines don't wrap ('wrap' off): To the leftmost character of the current line that is on the screen.</p>  
+					<p>Differs from "0" when the first character of the line is not on the screen.</p>
+				</li>
+			<ul>
+		</td>
+  </tr>
+  <tr>
+    <td>g^</td>
+    <td>When lines wrap ('wrap' on): To the first non-blank character of the screen line (exclusive).  Differs from "^" when a line is wider than the screen.  When lines don't wrap ('wrap' off): To the leftmost non-blank character of the current line that is on the screen.  Differs from "^" when the first non-blank character of the line is not on the screen. </td>
+  </tr>
+  <tr>
+    <td>g$ or<br> g&lt;End&gr;</td>
+    <td>When lines wrap ('wrap' on): To the last character of the screen line and [count - 1] screen lines downward (inclusive).  Differs from "$" when a line is wider than the screen.  When lines don't wrap ('wrap' off): To the rightmost character of the current line that is visible on the screen.  Differs from "$" when the last character of the line is not on the screen or when a count is used.</td>
+  </tr>
+  <tr>
+    <td>f{char}</td>
+    <td>To [count]'th occurrence of {char} to the right.  The cursor is placed on {char} (inclusive).</td>
+  </tr>
+  <tr>
+    <td>F{char}</td>
+    <td>To the [count]'th occurrence of {char} to the left.  The cursor is placed on {char} (inclusive).</td>
+  </tr>
+  <tr>
+    <td>t{char}</td>
+    <td>Till before [count]'th occurrence of {char} to the right.  The cursor is placed on the character left of {char} (inclusive).</td>
+  </tr>
+  <tr>
+    <td>T{char}</td>
+    <td>Till after [count]'th occurrence of {char} to the left.  The cursor is placed on the character right of {char} (inclusive).</td>
+  </tr>
+  <tr>
+    <td>;</td>
+    <td>Repeat latest f, t, F or T [count] times.</td>
+  </tr>
+  <tr>
+    <td>,</td>
+    <td>Repeat latest f, t, F or T in opposite direction [count] times.</td>
+  </tr>
+  <tr>
+    <td>-  &lt;minus&gt;</td>
+    <td>[count] lines upward, on the first non-blank character
+    (linewise).</td>
+  </tr>
+  <tr>
+    <td>+ or<br> CTRL-M or<br> &lt;CR&gt;</td>
+    <td>[count] lines downward, on the first non-blank character
+    (linewise).</td>
+  </tr>
+  <tr>
+    <td>_  &lt;underscore&gt;</td>
+    <td>[count] - 1 lines downward, on the first non-blank character (linewise).</td>
+  </tr>
+  <tr>
+    <td>&lt;C-End&gt; or<br> G</td>
+    <td>Goto line [count], default last line, on the first non-blank character.</td>
+  </tr>
+  <tr>
+    <td>&lt;C-Home&gt;  or<br> gg</td>
+    <td>Goto line [count], default first line, on the first non-blank character.</td>
+  </tr>
+  <tr>
+    <td>&lt;S-Right&gt;  or<br> w</td>
+    <td>[count] words forward </td>
+  </tr>
+  <tr>
+    <td>&lt;C-Right&gt;  or<br> W</td>
+    <td>[count] WORDS forward </td>
+  </tr>
+  <tr>
+    <td>e</td>
+    <td>Forward to the end of word [count] </td>
+  </tr>
+  <tr>
+    <td>E</td>
+    <td>Forward to the end of WORD [count] </td>
+  </tr>
+  <tr>
+    <td>&lt;S-Left&gt;  or<br> b</td>
+    <td>[count] words backward </td>
+  </tr>
+  <tr>
+    <td>&lt;C-Left&gt;  or<br> B</td>
+    <td>[count] WORDS backward </td>
+  </tr>
+  <tr>
+    <td>ge</td>
+    <td>Backward to the end of word [count] </td>
+  </tr>
+  <tr>
+    <td>gE</td>
+    <td>Backward to the end of WORD [count]</td>
+  </tr>
+</table>
+<pre>These commands move over words or WORDS.
+<p>A word consists of a sequence of letters, digits and underscores, or a
+sequence of other non-blank characters, separated with white space (spaces,
+tabs).  This can be changed with the 'iskeyword' option.
+A WORD consists of a sequence of non-blank characters, separated with white
+space.  An empty line is also considered to be a word and a WORD.
+</pre>
+<table width="100%" border=3>
+  <tr>
+    <td>(</td>
+    <td>[count] sentences backward</td>
+  </tr>
+  <tr>
+    <td>)</td>
+    <td>[count] sentences forward </td>
+  </tr>
+  <tr>
+    <td>{</td>
+    <td>[count] paragraphs backward</td>
+  </tr>
+  <tr>
+    <td>}</td>
+    <td>[count] paragraphs forward </td>
+  </tr>
+  <tr>
+    <td>]]</td>
+    <td>[count] sections forward or to the next '{' in the first column.  When used after an operator, then the '}' in the first column.</td>
+  </tr>
+  <tr>
+    <td>][</td>
+    <td>[count] sections forward or to the next '}' in the first column </td>
+  </tr>
+  <tr>
+    <td>[[</td>
+    <td>[count] sections backward or to the previous '{' in the first
+    column</td>
+  </tr>
+  <tr>
+    <td>[]</td>
+    <td>[count] sections backward or to the previous '}' in the first column
+    </td>
+  </tr>
+</table>
+	</td></tr>
+	<tr><th>Screen movement commands 
+	</th>
+	<td>
+<table width="100%" border=3>
+  <tr>
+    <td>z.</td>
+    <td>Center the screen on the cursor</td>
+  </tr>
+  <tr>
+    <td>zt</td>
+    <td>Scroll the screen so the cursor is at the top</td>
+  </tr>
+  <tr>
+    <td>zb</td>
+    <td>Scroll the screen so the cursor is at the bottom</td>
+  </tr>
+</table>
+	</td></tr>
+	<tr><th>Marks  
+	</th>
+	<td>
+<table width="100%" border=3>
+  <tr>
+    <td>m{a-zA-Z}</td>
+    <td>Set mark {a-zA-Z} at cursor position (does not move the cursor, this is not a motion command).</td>
+  </tr>
+  <tr>
+    <td>m'  or<br> m`</td>
+		<td>Set the previous context mark.<br>  This can be jumped to with the "''" or "``" commandi<br> (does not move the cursor, this is not a motion command).</td>
+  </tr>
+  <tr>
+    <td>:[range]ma[rk] {a-zA-Z}</td>
+    <td>Set mark {a-zA-Z} at last line number in [range], column 0.  Default is cursor line.</td>
+  </tr>
+  <tr>
+    <td>:[range]k{a-zA-Z}</td>
+    <td>Same as :mark, but the space before the mark name can be omitted.</td>
+  </tr>
+  <tr>
+    <td>'{a-z}</td>
+    <td>To the first non-blank character on the line with mark {a-z} (linewise).</td>
+  </tr>
+  <tr>
+    <td>'{A-Z0-9}</td>
+    <td>To the first non-blank character on the line with mark {A-Z0-9} in the correct file</td>
+  </tr>
+  <tr>
+    <td>`{a-z}</td>
+    <td>To the mark {a-z}</td>
+  </tr>
+  <tr>
+    <td>`{A-Z0-9}</td>
+    <td>To the mark {A-Z0-9} in the correct file</td>
+  </tr>
+  <tr>
+    <td>:marks</td>
+    <td>List all the current marks (not a motion command).</td>
+  </tr>
+  <tr>
+    <td>:marks {arg}</td>
+    <td>List the marks that are mentioned in {arg} (not a motion command).  For example:</td>
+  </tr>
+</table>
+	</td></tr>
+	<tr><th>Searching  
+	</th>
+	<td>
+<table width="100%" border=3>
+  <tr>
+    <td>/{pattern}[/]<CR></td>
+    <td>Search forward for the [count]'th occurrence of {pattern}</td>
+  </tr>
+  <tr>
+    <td>/{pattern}/{offset}<CR></td>
+    <td>Search forward for the [count]'th occurrence of {pattern} and go {offset} lines up or down.</td>
+  </tr>
+  <tr>
+    <td>/&lt;CR&gt;</td>
+    <td>Search forward for the [count]'th latest used pattern</td>
+  </tr>
+  <tr>
+    <td>//{offset}&lt;CR&gt;</td>
+    <td>Search forward for the [count]'th latest used pattern with new.  If {offset} is empty no offset is used.</td>
+  </tr>
+  <tr>
+    <td>?{pattern}[?]&lt;CR&gt;</td>
+    <td>Search backward for the [count]'th previous occurrence of {pattern}
+    </td>
+  </tr>
+  <tr>
+    <td>?{pattern}?{offset}&lt;CR&gt;</td>
+    <td>Search backward for the [count]'th previous occurrence of {pattern} and go {offset} lines up or down </td>
+  </tr>
+  <tr>
+    <td>?&lt;CR&gt;</td>
+    <td>Search backward for the [count]'th latest used pattern </td>
+  </tr>
+  <tr>
+    <td>??{offset}&lt;CR&gt;</td>
+    <td>Search backward for the [count]'th latest used pattern with new {offset}.  If {offset} is empty no offset is used.</td>
+  </tr>
+  <tr>
+    <td>n</td>
+    <td>Repeat the latest "/" or "?" [count] times.</td>
+  </tr>
+  <tr>
+    <td>N</td>
+    <td>Repeat the latest "/" or "?" [count] times in opposite direction.
+    </td>
+  </tr>
+</table>
+	</td></tr>
+	<tr><th>Selecting Text (Visual Mode)  
+	</th>
+	<td>
+<p>To select text, enter visual mode with one of the commands below, and use
+<a href=#motion>motion commands</a> to highlight the text you are interested
+in.</p><p>  Then, use some command on the text. </p>
+<pre>
+The operators that can be used are:
+  ~  switch case
+  d  delete
+  c  change
+  y  yank
+  >  shift right 
+  <  shift left 
+  !  filter through external command 
+  =  filter through 'equalprg' option command 
+  gq  format lines to 'textwidth' length 
+</pre>
+
+<table width="100%" border=3>
+  <tr>
+    <td>v</td>
+    <td>start Visual mode per character.</td>
+  </tr>
+  <tr>
+    <td>V</td>
+    <td>start Visual mode linewise.</td>
+  </tr>
+  <tr>
+    <td>&lt;Esc&gt;</td>
+    <td>exit Visual mode without making any changes</td>
+  </tr>
+</table>
+	</td></tr>
+	<tr><th>How to Suspend  
+	</th>
+	<td>
+			<table width="100%" border=3>
+				<tr>
+					<td>CTRL-Z</td>
+					<td>Suspend Vim, like ":stop".  Works in Normal and in Visual mode.<br>  In Insert and Command-line mode, the CTRL-Z is inserted as a normal character.</td>
+				</tr>
+				<tr>
+					<td>:sus[pend][!]  or<br> :st[op][!]
+					</td>
+					<td>Suspend Vim. <br> 
+							If the '!' is not given and 'autowrite' is set, every buffer with changes and a file name is written out.<br>  
+							If the '!' is given or 'autowrite' is not set, changed buffers are not written, don't forget to bring Vim back to the foreground later!
+					</td>
+				</tr>
+			</table>
+	</td></tr>
+</table>
+		</comment>
+	</term>
+	<term>
+		<definition>Windows tips :</definition>
+		<comment>
+			<ul>
+				<li>Disable MSIx from registry
+				<ol>
+					<li>press WinKey + x</li>
+					<li>pick 'run', type the program to run --> regedit</li>
+					<li>down the key tree of 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\PCI\VEN_9005&DEV_028D&SUBSYS_05549005&REV_01\4&21802ccd&0&0018\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties\MSISupported'</li>
+					<li>change the value from 0 to 1 to disable</li>
+					<li>value of 1 is to enable</li>
+					<li>I have verified this with ARC 8885Q, this switch would work, but you need to make change to each PCIE channel</li>
+				</ol></li>
+				<li>Enable Administrator auto login with Windows 8, 8.1
+					<ol>
+					<li>press [Windows key + x key]</li>
+					<li>select run and keyin "control userpasswords2"</li>
+					<li>un-check the box that user have to keyin password</li>
+					<li>OK, and exit, reboot</li>
+				</ol></li>
+				<li>Remote Desktop Enabling
+					<ol>
+					<li>WinKey + x key</li>
+					<li>select "system"</li>
+					<li>pick "Allow remote connections" ONLY</li>
+					</ol>
+				</li>
+				<li>Standby and Hibernation:
+					<ul>
+					<li>Definition
+						<ul>
+							<li>S0 / Wake  : The system is fully usable. Devices that are not in use can save power by entering a lower power state.</li>
+						<li>S1 / Sleep : all the processor caches are flashed, cpu idle, but cpu and RAM has power, not needed devices are powered off.</li>
+						<li>S2         : cpu powered off, dirty cache flushed to RAM</li>
+						<li>S3 / Standby: suspend to RAM, RAM has power.</li>
+						<li>S4 / Hibernation: The system appears to be off. Power consumption is reduced to the lowest level. The system saves the contents of memory to a hibernation file, preserving the state of the operating system, applications, and open documents. disk is off, HDD HBA is off.</li>
+						<li>S5 / Soft off: The system appears to be off. Some components remain powered so the computer can wake from input from the keyboard, LAN, or a USB device. The working context can be restored if it is stored on nonvolatile media.</li>
+						</ul></li>
+					<li>Enabling
+						<ul>
+						<li>run 'powercfg.exe -h on' </li>
+						<li>or run 'powercfg.exe /hibernate on'</li>
+						</ul></li>
+					<li>Invoking hibernation in Windows
+						<ul>
+							<li>Windows Sleeper <a href="/tools/Reboot/sleeper2.3/Sleeper.exe" target="_blank">PowerManagement tool</a></li>
+						</ul></li>
+					</ul></li>
+				<li>Possible product keys:<br>
+				<ul>
+					<li>3NTXP-38K2T-22YBP-3W3HP-CJ98M</li>
+					<li>DataCenter GUI key: MNJ6M-29WGJ-F4W98-CP3V3-JTXCM</li>
+				</ul></li>
+				<li>Possible Win7 Enterprise X64 product keys:<br>
+				<ul>
+					<li>TB73V-BTPJ6-BG396-W9PCQ-YYJ88</li>
+				</ul></li>
+				<li>Possible 2012 R2 Vish product keys:<br>
+				<ul>
+					<li>DHHCY-NJ68K-W88TO-WRPKY-MY3WM</li>
+				</ul></li>
+				<li>PowerShell
+				<ul>
+					<li>Launch an app:
+					<ul>
+						<li>Invoke-Item c:\Windows\system32\calc.exe</li>
+					</ul></li>
+					<li><a href="www.powershellpro.com" target="_blank">PowerShell Tutorial Link</a></li>
+				</ul>
+				</li>
+				<li>Shortcut keys
+				<ul>
+					<li>
+Windows system key combinations
+			<ul>
+				<li>
+					F1: Help
+				</li>
+				<li>
+    CTRL+ESC: Open Start menu
+				</li>
+				<li>
+    ALT+TAB: Switch between open programs
+				</li>
+				<li>
+    ALT+F4: Quit program
+				</li>
+				<li>
+    SHIFT+DELETE: Delete item permanently
+				</li>
+				<li>
+    Windows Logo+L: Lock the computer (without using CTRL+ALT+DELETE)
+				</li>
+			</ul>
+		</li>
+		<li>
+Windows program key combinations
+
+			<ul>
+				<li>
+    CTRL+C: Copy
+				</li>
+				<li>
+    CTRL+X: Cut
+				</li>
+				<li>
+    CTRL+V: Paste
+				</li>
+				<li>
+    CTRL+Z: Undo
+				</li>
+				<li>
+    CTRL+B: Bold
+				</li>
+				<li>
+    CTRL+U: Underline
+				</li>
+				<li>
+    CTRL+I: Italic
+				</li>
+			</ul>
+
+		</li>
+		<li>
+Mouse click/keyboard modifier combinations for shell objects
+
+			<ul>
+				<li>
+    SHIFT+right click: Displays a shortcut menu containing alternative commands
+				</li>
+				<li>
+    SHIFT+double click: Runs the alternate default command (the second item on the menu)
+				</li>
+				<li>
+    ALT+double click: Displays properties
+				</li>
+				<li>
+    SHIFT+DELETE: Deletes an item immediately without placing it in the Recycle Bin
+				</li>
+			</ul>
+
+		</li>
+		<li>
+General keyboard-only commands
+
+			<ul>
+				<li>
+    F1: Starts Windows Help
+				</li>
+				<li>
+    F10: Activates menu bar options
+				</li>
+				<li>
+    SHIFT+F10 Opens a shortcut menu for the selected item (this is the same as right-clicking an object
+				</li>
+				<li>
+    CTRL+ESC: Opens the Start menu (use the ARROW keys to select an item)
+				</li>
+				<li>
+    CTRL+ESC or ESC: Selects the Start button (press TAB to select the taskbar, or press SHIFT+F10 for a context menu)
+				</li>
+				<li>
+    CTRL+SHIFT+ESC: Opens Windows Task Manager
+				</li>
+				<li>
+    ALT+DOWN ARROW: Opens a drop-down list box
+				</li>
+				<li>
+    ALT+TAB: Switch to another running program (hold down the ALT key and then press the TAB key to view the task-switching window)
+				</li>
+				<li>
+    SHIFT: Press and hold down the SHIFT key while you insert a CD-ROM to bypass the automatic-run feature
+				</li>
+				<li>
+    ALT+SPACE: Displays the main window's System menu (from the System menu, you can restore, move, resize, minimize, maximize, or close the window)
+				</li>
+				<li>
+    ALT+- (ALT+hyphen): Displays the Multiple Document Interface (MDI) child window's System menu (from the MDI child window's System menu, you can restore, move, resize, minimize, maximize, or close the child window)
+				</li>
+				<li>
+    CTRL+TAB: Switch to the next child window of a Multiple Document Interface (MDI) program
+				</li>
+				<li>
+    ALT+underlined letter in menu: Opens the menu
+				</li>
+				<li>
+    ALT+F4: Closes the current window
+				</li>
+				<li>
+    CTRL+F4: Closes the current Multiple Document Interface (MDI) window
+				</li>
+				<li>
+    ALT+F6: Switch between multiple windows in the same program (for example, when the Notepad Find dialog box is displayed, ALT+F6 switches between the Find dialog box and the main Notepad window)
+				</li>
+			</ul>
+
+		</li>
+		<li>
+Shell objects and general folder/Windows Explorer shortcuts for a selected object:
+
+			<ul>
+				<li>
+    F2: Rename object
+				</li>
+				<li>
+    F3: Find all files
+				</li>
+				<li>
+    CTRL+X: Cut
+				</li>
+				<li>
+    CTRL+C: Copy
+				</li>
+				<li>
+    CTRL+V: Paste
+				</li>
+				<li>
+    SHIFT+DELETE: Delete selection immediately, without moving the item to the Recycle Bin
+				</li>
+				<li>
+    ALT+ENTER: Open the properties for the selected object
+				</li>
+			</ul>
+
+		</li>
+		<li>
+To copy a file
+			<ul>
+				<li>
+Press and hold down the CTRL key while you drag the file to another folder.
+				</li>
+			</ul>
+		</li>
+		<li>
+To create a shortcut
+			<ul>
+				<li>
+Press and hold down CTRL+SHIFT while you drag a file to the desktop or a folder.
+				</li>
+			</ul>
+		</li>
+		<li>
+General folder/shortcut control
+
+			<ul>
+				<li>
+    F4: Selects the Go To A Different Folder box and moves down the entries in the box (if the toolbar is active in Windows Explorer)
+				</li>
+				<li>
+    F5: Refreshes the current window.
+				</li>
+				<li>
+    F6: Moves among panes in Windows Explorer
+				</li>
+				<li>
+    CTRL+G: Opens the Go To Folder tool (in Windows 95 Windows Explorer only)
+				</li>
+				<li>
+    CTRL+Z: Undo the last command
+				</li>
+				<li>
+    CTRL+A: Select all the items in the current window
+				</li>
+				<li>
+    BACKSPACE: Switch to the parent folder
+				</li>
+				<li>
+    SHIFT+click+Close button: For folders, close the current folder plus all parent folders
+				</li>
+			</ul>
+
+		</li>
+		<li>
+Windows Explorer tree control
+
+			<ul>
+				<li>
+    Numeric Keypad *: Expands everything under the current selection
+				</li>
+				<li>
+    Numeric Keypad +: Expands the current selection
+				</li>
+				<li>
+    Numeric Keypad -: Collapses the current selection.
+				</li>
+				<li>
+    RIGHT ARROW: Expands the current selection if it is not expanded, otherwise goes to the first child
+				</li>
+				<li>
+    LEFT ARROW: Collapses the current selection if it is expanded, otherwise goes to the parent
+				</li>
+			</ul>
+
+		</li>
+		<li>
+Properties control
+
+			<ul>
+				<li>
+    CTRL+TAB/CTRL+SHIFT+TAB: Move through the property tabs
+				</li>
+			</ul>
+
+		</li>
+		<li>
+Accessibility shortcuts
+
+			<ul>
+				<li>
+    Press SHIFT five times: Toggles StickyKeys on and off
+				</li>
+				<li>
+    Press down and hold the right SHIFT key for eight seconds: Toggles FilterKeys on and off
+				</li>
+				<li>
+    Press down and hold the NUM LOCK key for five seconds: Toggles ToggleKeys on and off
+				</li>
+				<li>
+    Left ALT+left SHIFT+NUM LOCK: Toggles MouseKeys on and off
+				</li>
+				<li>
+    Left ALT+left SHIFT+PRINT SCREEN: Toggles high contrast on and off
+				</li>
+			</ul>
+
+		</li>
+		<li>
+Microsoft Natural Keyboard keys
+
+			<ul>
+				<li>
+    Windows Logo: Start menu
+				</li>
+				<li>
+    Windows Logo+R: Run dialog box
+				</li>
+				<li>
+    Windows Logo+M: Minimize all
+				</li>
+				<li>
+    SHIFT+Windows Logo+M: Undo minimize all
+				</li>
+				<li>
+    Windows Logo+F1: Help
+				</li>
+				<li>
+    Windows Logo+E: Windows Explorer
+				</li>
+				<li>
+    Windows Logo+F: Find files or folders
+				</li>
+				<li>
+    Windows Logo+D: Minimizes all open windows and displays the desktop
+				</li>
+				<li>
+    CTRL+Windows Logo+F: Find computer
+				</li>
+				<li>
+    CTRL+Windows Logo+TAB: Moves focus from Start, to the Quick Launch toolbar, to the system tray (use RIGHT ARROW or LEFT ARROW to move focus to items on the Quick Launch toolbar and the system tray)
+				</li>
+				<li>
+    Windows Logo+TAB: Cycle through taskbar buttons
+				</li>
+				<li>
+    Windows Logo+Break: System Properties dialog box
+				</li>
+				<li>
+    Application key: Displays a shortcut menu for the selected item
+				</li>
+			</ul>
+
+		</li>
+		<li>
+Microsoft Natural Keyboard with IntelliType software installed
+
+			<ul>
+				<li>
+    Windows Logo+L: Log off Windows
+				</li>
+				<li>
+    Windows Logo+P: Starts Print Manager
+				</li>
+				<li>
+    Windows Logo+C: Opens Control Panel
+				</li>
+				<li>
+    Windows Logo+V: Starts Clipboard
+				</li>
+				<li>
+    Windows Logo+K: Opens Keyboard Properties dialog box
+				</li>
+				<li>
+    Windows Logo+I: Opens Mouse Properties dialog box
+				</li>
+				<li>
+    Windows Logo+A: Starts Accessibility Options (if installed)
+				</li>
+				<li>
+    Windows Logo+SPACEBAR: Displays the list of Microsoft IntelliType shortcut keys
+				</li>
+				<li>
+    Windows Logo+S: Toggles CAPS LOCK on and off
+				</li>
+			</ul>
+
+		</li>
+		<li>
+Dialog box keyboard commands
+
+			<ul>
+				<li>
+    TAB: Move to the next control in the dialog box
+				</li>
+				<li>
+    SHIFT+TAB: Move to the previous control in the dialog box
+				</li>
+				<li>
+    SPACEBAR: If the current control is a button, this clicks the button. If the current control is a check box, this toggles the check box. If the current control is an option, this selects the option.
+				</li>
+				<li>
+    ENTER: Equivalent to clicking the selected button (the button with the outline)
+				</li>
+				<li>
+    ESC: Equivalent to clicking the Cancel button
+				</li>
+				<li>
+    ALT+underlined letter in dialog box item: Move to the corresponding item
+				</li>
+			</ul>
+		</li>
+					</li>
+				</li>
+			</ul>
+		</comment>
+	</term>
+	<term>
+		<definition>Setting Static IP address::Ubuntu</definition>
+		<comment>
+			<table>
+				<tr>
+					<th>step 1: make sure<br> /etc/network/interfaces looks like this</th>
+					<td>
+						<ul>
+							<li> auto lo eth0</li>
+							<li>iface lo inet loopback</li>
+							<li>iface eth0 inet static</li>
+							<li>	address 192.168.1.101</li>
+							<li>	netmask 255.255.255.0</li>
+							<li>	gateway 192.168.1.1</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<th>step 2: restart networking</th>
+					<td>sudo /etc/init.d/networking restart </td>
+				</tr>
+			</table>
+		</comment>
+	</term>
+	<term>
+		<definition>
+			OSD type devices
+		</definition>
+		<comment>
+			An OBSD (see 3.1.27) contains one or more logical units that return the OSD peripheral device type value in their standard INQUIRY data (see SPC-4). From the perspective of the application client, each logical unit in an OBSD contains OSD objects (see 3.1.29), not logical blocks (see 4.5). All stored data objects (see 4.6) have associated attributes (see 4.7).
+		</comment>
+	</term>
+	<term>
+		<definition> OBSD device abstraction
+		</definition>
+		<comment>
+			<table>
+				<tr>
+					<td>
+						The user component of the file system contains such functions as:
+						<ol>
+							<li>
+								a) Hierarchy management;
+							</li>
+							<li>
+								b) Naming; and
+							</li>
+							<li>
+								c) User access control.
+							</li>
+						</ol>
+The storage management component is focused on mapping logical constructs (e.g., files or database entries) to
+the physical organization of the storage media. In the OSD model, the logical constructs are called user objects
+(see 4.6.5). The root object (see 4.6.3), partitions (see 4.6.4), and collections (see 4.6.6) provide additional navigational
+aids for user objects.
+In addition to mapping data, the storage management component maintains other information about the OSD
+objects that it stores (e.g., size, usage quotas, and associated username) in attributes (see 4.7). The user
+component may have the ability to influence the properties of object data through the specification of attributes
+(e.g., directing that the location of an object to be in close proximity to another object or to have some higher
+performance characteristic) via mechanisms that are outside the scope of this standard.
+In this model, the OBSD (see 3.1.27) makes the decisions as to where to allocate storage capacity for individual
+data entities and managing free space.
+					</td>
+					<td>	
+						<img src="/OBSD_device_basic_illustration.png" >
+					</td>
+				</tr>
+			</table>
+		</comment>
+	</term>
+	<term>
+		<definition>Object Storage related I:</definition>
+		<comment>
+			<a href="/scsi-osd2r05a.pdf" target="_blank">SCSI Object Storage Device(OSD) Spec 2</a>
+		</comment>
+	</term>
+	<term>
+		<definition>Object Storage related II:</definition>
+		<comment>
+			<a href="/Object-BasedStorageDevices.htm" target="_blank">OBSD demo from Oracle</a>
+		</comment>
+	</term>
+	<term>
+		<definition>Automation fstab:</definition>
+		<comment>
+			10.25.65.154:/aatfnfspvgsunsec /aatfnfspvgsunsec 	nfs 	defaults 	0 0<br>
+				10.25.64.93:/pvgsunsecsv /pvgsunsecsv nfs defaults 0 0<br>
+					//10.25.64.66/Project_Builds /PB cifs username=pvg,password=Letmein123 0 0<br>
+		</comment>
+	</term>
+	<term>
+		<definition>Perl MCPAN console:</definition>
+		<comment>
+			yum install perl-CPAN<br>
+			perl -MCPAN -e "install module"<br>
+			perl -MCPAN -e "shell"<br>
+		</comment>
+	</term>
+	<term>
+		<definition>Object Storage Wiki:</definition>
+		<comment>
+			<a href="http://en.wikipedia.org/wiki/Object_storage" target="_blank">Object Storage Wiki</a>
+		</comment>
+	</term>
+	<term>
+		<definition>Object Storage:FaceBook Haystack:</definition>
+		<comment>
+			<a href="/FacebookHaystack.htm" target="_blank">Facebook Haystack</a>
+		</comment>
+	</term>
+	<term>
+		<definition>Object Storage:FaceBook Hadoop:</definition>
+		<comment>
+			<a href="/FacebookHadoop.htm" target="_blank">Facebook Hadoop</a>
+		</comment>
+	</term>
+	<term>
+		<definition>Javascript Caveat0001:</definition>
+		<comment>
+			<a style="color:green">getElementById</a>
+			not 
+			<a style="color:red">getElementByID</a>
+		</comment>
+	</term>
+	<term>
+		<definition>Javascript Caveat0002:</definition>
+		<comment>
+			if html is generated by a cgi script, then this applies:<br>
+			use src="http://10.25.64.93/javascript.js" instead of <br>
+			  src="javascript.js"
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:auto launch method:</definition>
+		<comment>
+			<ol>
+				<li>crontab -e</li>
+				<li>rc.local</li>
+				<li>rc3.d</li>
+				<li>socket
+					<ul>
+						<li>customize written</li>
+						<li>http cgi-bin</li>
+					</ul>
+				</li>
+			</ol>
+		</comment>
+	</term>
+	<term>
+		<definition>CGI scripts caveat:</definition>
+		<comment>
+			no empty line in the beginning of the script file
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:bash:ssh:check how many ssh connections currently exists:</definition>
+		<comment>
+			<a>who</a>
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:GNome:Auto Login Enabling</definition>
+		<comment>
+			To enable autolog in:<br>
+				<br>
+Edit /etc/gdm/custom.conf to add the following two lines in the [daemon] section: <br>
+<br>
+[daemon] <br>
+AutomaticLoginEnable=true <br>
+	AutomaticLogin=root <br>
+		( tipped from Wolf)<br>
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:crontab :</definition>
+		<comment>
+			crontab will display what is running if the line is defined with this section in it:<br>
+			Display=:0.0 /usr/bin/gnome-terminal -e /Richard/myRebootScript.sh
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:Network:check TCP ports usage :</definition>
+		<comment>
+			netstat -an
+		</comment>
+	</term>
+	<term>
+		<definition>APC power control support in BIOS :</definition>
+		<comment>
+			Restore on power loss: power on<br>
+			option of power off will cause the BIOS to only honor the power button
+		</comment>
+	</term>
+	<term>
+		<definition>Linux: disable Selinux</definition>
+		<comment>
+			edit /etc/selinux/config<br>
+				SELINUX=disabled<br>
+			check selinux status:<br>
+			getenforce
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:Firewall:stop:</definition>
+		<comment>
+			systemctl stop firewalld<br>
+			systemctl disable firewalld
+		</comment>
+	</term>
+	<term>
+		<definition>Python</definition>
+		<comment>
+			<ul>
+			<li>Book:<br>
+				<a href="/Python_Essential_Reference_3rd_Edition.pdf" target="_blank">Python reference book</a>
+			</li>
+			<li>examples<br>
+				<ul>
+				<li>File Read:<br>
+					f = open(r"c:/test.txt")<br>
+					for char in f.read():<br>
+						print char
+				</li>
+				<li>partitioning hdds with fork<br>
+					<a href="/docfiles/part_fork.py" target="_blank">part_fork.py</a>
+				</li>
+				<li>pygame good experience<br>
+					<ul>
+					<li>use Ubuntu 16.04 32bit desktop + apt-get install python-pygame</li>
+					</ul></li>
+				<li>reboot script for Linux<br>
+					<ol>
+						<li> <a href="/docfiles/3000reboot.py" target="_blank">3000reboot.py</a> </li>
+						<li>copy 3000reboot.py into /root</li>
+						<li>Add this line into crontab<br>
+							@reboot cd /root && ./3000reboot.py</li>
+					</ol></li>
+				<li>reverse a string<br>
+					<ul>
+					<li>myStr[::-1]</li>
+					</ul></li>
+				<li>show version<br>
+					<ul>
+						<li>python -V</li>
+					</ul>
+				</li>
+				<li>sorted<br>
+					nnames = sorted([x.branch[0].data for x in self.branch], key=str.lower )
+				</li>
+				<li>use those steps to import tkinter<br>
+					<ol>
+						<li>can _tkinter be imported?<br>
+							import _tkinter<br>
+							if this works, goto step2<br>
+								If it fails with "No module named _tkinter", your Python configuration needs to be modified to include this module (which is an extension module implemented in C). Do **not** edit Modules/Setup (it is out of date). You may have to install Tcl and Tk (when using RPM, install the -devel RPMs as well) and/or edit the setup.py script to point to the right locations where Tcl/Tk is installed. If you install Tcl/Tk in the default locations, simply rerunning "make" should build the _tkinter extension. </li>
+						<li>can Tkinter be imported?<br>
+							import Tkinter # for versions prior to version 3.0<br>
+							import tkinter # for v3.0 and later<br>
+							if it works, goto step3<br></li>
+						<li>does Tkinter work?<br>
+							Tkinter._test() # for version prior to v3.0<br>
+							tkinter._test() # for v3.0 and later</li>
+				</ol>
+				</li>
+				</ul>	
+			</li>
+			<li>Facts:<br>
+				<ul>
+				<li>types : using type(i).__name__<br>
+					<ol>
+						<li>dict</li>
+						<li>float</li>
+						<li>int</li>
+						<li>list</li>
+						<li>str</li>
+					</ol>
+				</li>
+				</ul>	
+			</li>
+			</ul>
+		</comment>
+	</term>
+	<term>
+		<definition>Vendor Information:Intel SSD</definition>
+		<comment>
+			<a href="http://www.tested.com/forums/pc-and-mac/44240-huge-bug-in-intel-ssds-complete-recovery-information-here/" target="_blank">Intel SSD bad drive rescue information</a>
+		</comment>
+	</term>
+	<term>
+		<definition>Mysql setup:</definition>
+		<comment>
+			<ul>
+				<li>Setup Mysql in Ubuntu:<br>
+				<ol>
+					<li>installation:
+						<ul>
+							<li>apt-get install mysql-server</li>
+						</ul>
+					</li>
+					<li>verify running:
+						<ul>
+							<li>netstat -tap|grep mysql</li>
+						</ul>
+					</li>
+					<li>Configuration:
+						<ul>
+							<li>vi /etc/mysql/my.cnf</li>
+						</ul>
+					</li>
+					<li>restart mysql:
+						<ul>
+							<li>service mysql restart</li>
+						</ul>
+					</li>
+					<li>Change mysql root password from Linux :
+						<ul>
+							<li>dpkg-reconfigure mysql-server-5.5</li>
+						</ul>
+					</li>
+					<li>show databases from Linux:
+						<ul>
+							<li>mysqlshow -u root -p38283828
+							</li>
+						</ul>
+					</li>
+				</ol></li>
+			</ul>
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:Bash Scripting:Integer series</definition>
+		<comment>
+			for i in `seq 1 2 20`;do echo $i;done
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:smartctl man page:</definition>
+		<comment>
+			smartct<tab id=t1>l 6.3 201<tab id=t2>4-07-26 r3976 [x86_64-linux-2.6.18-371.el5] (local build) <br>
+Copyright (C) 2002-14, Bruce Allen, Christian Franke, www.smartmontools.org <br>
+
+Usage: smartctl [options] device <br>
+
+============================================ SHOW INFORMATION OPTIONS ===== <br>
+
+	-h, --help, --usage <br>
+<tab to=t1> Display this help and exit <br>
+
+  -V, --version, --copyright, --license <br>
+		<tab to=t1> Print license, copyright, and version information and exit <br>
+
+  -i, --info <br>
+		<tab to=t1> Show identity information for device <br>
+
+  --identify[=[w][nvb]] <br>
+		<tab to=t1> Show words and bits from IDENTIFY DEVICE data                (ATA) <br>
+
+  -g NAME, --get=NAME <br>
+		<tab to=t1> Get device setting: all, aam, apm, lookahead, security, wcache, rcache, wcreorder <br>
+
+  -a, --all <br>
+		<tab to=t1> Show all SMART information for device <br>
+
+  -x, --xall <br>
+		<tab to=t1> Show all information for device <br>
+
+  --scan <br>
+		<tab to=t1> Scan for devices <br>
+
+  --scan-open <br>
+		<tab to=t1> Scan for devices and try to open each device <br>
+
+================================== SMARTCTL RUN-TIME BEHAVIOR OPTIONS ===== <br>
+
+  -q TYPE, --quietmode=TYPE                                           (ATA) <br>
+		<tab to=t1> Set smartctl quiet mode to one of: errorsonly, silent, noserial <br>
+
+  -d TYPE, --device=TYPE <br>
+		<tab to=t1> Specify device type to one of: ata, scsi, sat[,auto][,N][+TYPE], usbcypress[,X], usbjmicron[,p][,x][,N], usbsunplus, marvell, areca,N/E, 3ware,N, hpt,L/M/N, megaraid,N, aacraid,H,L,ID, cciss,N, auto, test <br>
+
+  -T TYPE, --tolerance=TYPE                                           (ATA) <br>
+		<tab to=t1> Tolerance: normal, conservative, permissive, verypermissive <br>
+
+  -b TYPE, --badsum=TYPE                                              (ATA) <br>
+		<tab to=t1> Set action on bad checksum to one of: warn, exit, ignore <br>
+
+  -r TYPE, --report=TYPE <br>
+		<tab to=t1> Report transactions (see man page) <br>
+
+  -n MODE, --nocheck=MODE                                             (ATA) <br>
+		<tab to=t1> No check if: never, sleep, standby, idle (see man page) <br>
+
+============================== DEVICE FEATURE ENABLE/DISABLE COMMANDS ===== <br>
+
+  -s VALUE, --smart=VALUE <br>
+		<tab to=t1> Enable/disable SMART on device (on/off) <br>
+
+  -o VALUE, --offlineauto=VALUE                                       (ATA) <br>
+		<tab to=t1> Enable/disable automatic offline testing on device (on/off) <br>
+
+  -S VALUE, --saveauto=VALUE                                          (ATA) <br>
+		<tab to=t1> Enable/disable Attribute autosave on device (on/off) <br>
+
+  -s NAME[,VALUE], --set=NAME[,VALUE] <br>
+		<tab to=t1> Enable/disable/change device setting: aam,[N|off], apm,[N|off], <br>
+		<tab to=t1> lookahead,[on|off], security-freeze, standby,[N|off|now], <br>
+		<tab to=t1> wcache,[on|off], rcache,[on|off], wcreorder,[on|off] <br>
+
+======================================= READ AND DISPLAY DATA OPTIONS ===== <br>
+
+  -H, --health <br>
+		<tab to=t1> Show device SMART health status <br>
+
+  -c, --capabilities                                                  (ATA) <br>
+		<tab to=t1> Show device SMART capabilities <br>
+
+  -A, --attributes <br>
+		<tab to=t1> Show device SMART vendor-specific Attributes and values <br>
+
+  -f FORMAT, --format=FORMAT                                          (ATA) <br>
+		<tab to=t1> Set output format for attributes: old, brief, hex[,id|val] <br>
+
+  -l TYPE, --log=TYPE <br>
+		<tab to=t1> Show device log. TYPE: error, selftest, selective, directory[,g|s], <br>
+		<tab to=t2> xerror[,N][,error], xselftest[,N][,selftest], <br>
+		<tab to=t2> background, sasphy[,reset], sataphy[,reset], <br>
+		<tab to=t2> scttemp[sts,hist], scttempint,N[,p], <br>
+		<tab to=t2> scterc[,N,M], devstat[,N], ssd, <br>
+		<tab to=t2> gplog,N[,RANGE], smartlog,N[,RANGE] <br>
+
+  -v N,OPTION , --vendorattribute=N,OPTION                            (ATA) <br>
+		<tab to=t1> Set display OPTION for vendor Attribute N (see man page) <br>
+
+  -F TYPE, --firmwarebug=TYPE                                         (ATA) <br>
+		<tab to=t1> Use firmware bug workaround: <br>
+		<tab to=t1> none, nologdir, samsung, samsung2, samsung3, xerrorlba, swapid <br>
+
+  -P TYPE, --presets=TYPE                                             (ATA) <br>
+		<tab to=t1> Drive-specific presets: use, ignore, show, showall <br>
+
+  -B [+]FILE, --drivedb=[+]FILE                                       (ATA) <br>
+		<tab to=t1> Read and replace [add] drive database from FILE <br>
+		<tab to=t1> [default is +/usr/local/etc/smart_drivedb.h <br>
+		<tab to=t1> and then    /usr/local/share/smartmontools/drivedb.h] <br>
+
+============================================ DEVICE SELF-TEST OPTIONS ===== <br>
+
+  -t TEST, --test=TEST <br>
+		<tab to=t1> Run test. TEST: offline, short, long, conveyance, force, vendor,N, <br>
+		<tab to=t2> select,M-N, pending,N, afterselect,[on|off] <br>
+
+  -C, --captive <br>
+		<tab to=t1> Do test in captive mode (along with -t) <br>
+
+  -X, --abort <br>
+		<tab to=t1> Abort any non-captive test on device <br>
+
+=================================================== SMARTCTL EXAMPLES ===== <br>
+
+  smartctl --all /dev/hda                    (Prints all SMART information) <br>
+
+  smartctl --smart=on --offlineauto=on --saveauto=on /dev/hda <br>
+                                              (Enables SMART on first disk) <br>
+
+  smartctl --test=long /dev/hda          (Executes extended disk self-test) <br>
+
+  smartctl --attributes --log=selftest --quietmode=errorsonly /dev/hda <br>
+                                      (Prints Self-Test & Attribute errors) <br>
+  smartctl --all --device=3ware,2 /dev/sda <br>
+  smartctl --all --device=3ware,2 /dev/twe0 <br>
+  smartctl --all --device=3ware,2 /dev/twa0 <br>
+  smartctl --all --device=3ware,2 /dev/twl0 <br>
+		<tab to=t1> (Prints all SMART info for 3rd ATA disk on 3ware RAID controller) <br>
+  smartctl --all --device=hpt,1/1/3 /dev/sda <br>
+		<tab to=t1> (Prints all SMART info for the SATA disk attached to the 3rd PMPort <br>
+		<tab to=t1> of the 1st channel on the 1st HighPoint RAID controller) <br>
+  smartctl --all --device=areca,3/1 /dev/sg2 <br>
+		<tab to=t1> (Prints all SMART info for 3rd ATA disk of the 1st enclosure <br>
+		<tab to=t1> on Areca RAID controller) <br>
+
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:ssh:password inside command line:</definition>
+		<comment>
+			<ol>
+				<li>yum install sshpass</li>
+				<li>sshpass -p 'adaptec' ssh root@10.25.65.193 date</li>
+			</ol>
+		</comment>
+	</term>
+	<term>
+		<definition>HTML:font tag usage:</definition>
+		<comment>
+			'<"font size=+5>Environment<"/font">'<br>
+			please remove all the quotation marks in the above line
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:cgi:use cgi program to send ssh command</definition>
+		<comment>
+			echo (apache user PASSWORD)|sudo -S sshpass -p (remote root password) ssh root@1.2.3.4 "command"
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:disable Selinux in Centos</definition>
+		<comment>
+			edit /etc/selinux/config<br>
+			SELINUX=disabled<br>
+			reboot or init 6<br>
+			sestatus
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:Firewall:stop:Centos</definition>
+		<comment>
+			service iptables save<br>
+			service iptables stop<br>
+			chkconfig iptables off
+		</comment>
+	</term>
+	<term>
+		<definition>PMCS:Expander card</definition>
+		<comment>
+		<ul>
+			<li>upgrade firmware using arcconf
+			<ul>
+				<li>arcconf expanderupgrade 1 enclosure 2 1 4096 expander firmware.bin 7 noprompt</li>
+			</ul>
+			</li>
+			<li>Belmont Background:
+			<ul>
+				<li>Zoning:
+				<ul>
+					<li>Port Based zoning</li>
+					<li>Address Resolved Zoning</li>
+				</ul>
+				</li>
+			</ul>
+			</li>
+			<li>Belmont Project:
+			<ul>
+				<li><a href="/docfiles/Projects/82885T/How_to_flash_SXP_fw.docx" target="_blank">How to flash SXP fw</a></li>
+				<li><a href="/docfiles/Projects/82885T/pm73206_04_fw_um.docm" target="_blank">Belmont Firmware White Paper</a></li>
+				<li><a href="/docfiles/Projects/82885T/Hawkeye_AEC-82885T_MRD.docx" target="_blank">MRD</a></li>
+				<li><a href="http://vapor/tools/chiplink/downloads.xhtml" target="_blank">Vapor chiplink</a></li>
+				<li><a href="/docfiles/Projects/82885T/ChipLink" target="_blank">93 ChipLink</a></li>
+				<li><a href="/docfiles/Projects/82885T/release" target="_blank">93 Belmont release</a></li>
+				<li>Automation uses TCL scripting, should be installed in lab test hosts.</li>
+				<li>Install svn first.</li>
+				<li>Install TCL</li>
+				<li>Then install pv_master
+					<ul>
+						<li>In Windows, it ends here:<br>
+								c:\\pv_master\pv_tcl\pv_tools\testcase_script
+						</li>
+						<li>Runs application:<br>
+								c:\\pv_master\pv_tcl\pv_start.tcl</li></ul>
+					</li>
+				<li>To assert the PVIO card in case there is IO timeout: assert iotimeout on</li>
+				<li>To put devices online:
+				<ul>
+					<li>in pv_master, switch to SRC device , look at the terminal</li>
+					<li>type<br>srcv_utility::diskpartOnlineAll</li>
+					<li>this util is using Windows diskpart command to bring the drive onbline, not protocol, don't worry.</li>
+				</ul>
+				</li>
+				<li>To burn init string to multiple SXPs:
+				<ul>
+					<li>in pv_master, switch to PV Tools::SXP init string</li>
+					<li>hit the "load list" button, then browse to select the *csvs.csv file</li>
+				</ul>
+				</li>
+				<li><a href="http://www.robot-electronics.co.uk/" target="_blank">Vendor of web based power relay</a></li>
+			</ul>
+			</li>
+		</ul>
+		</comment>
+	</term>
+	<term>
+		<definition>PMCS:HBA card</definition>
+		<comment>
+			<ul>
+				<li>Flashing to Thor sequence
+					<ul>
+						<li>Bootable USB stick image<br>
+						<ul>
+							<li><a href="/docfiles/ThorBootableUSB" target="_blank">Thor Flash , bootable USB image</a></li>
+							<li>keyin command "smartbip -ithor.rom -e8icprm.bin" targetting "8icprm.bin" for 8i card</li>
+						</ul>
+						<li>run pmcflash in Windows: just run the command and prepare thor.bin for it</li>
+					</ul> 
+				</li>
+				<li>UART commands:
+					<ul>
+						<li>bgtest
+							<ul>
+							<li>some test, don't know how to setup those tests neither</li>
+							</ul>
+						</li>
+						<li>locate_imq
+							<ul>
+							<li>print something, no detail yet</li>
+							</ul>
+						</li>
+						<li>show devices</li>
+						<li>show bkgnd:
+							<ul>
+							<li>will display some details on current volume mirror/parity initialization/checking.</li>
+							</ul>
+						</li>
+						<li>pmc rd_32 0xBE9000B0 1:
+						<ul>
+							<li>will display 1 byte of the content of card PCIE register 0xBE9000B0</li>
+							<li>Ideal for MSIx test case</li>
+						</ul></li>
+						<li>show palshim_log all
+							<ul>
+							<li>dump PAL shim log, all hex</li>
+							</ul>
+						</li>
+						<li>set ciss_rpl_dbg 2
+							<ul>
+							<li>to enable a verbose and nicely formatted output of the returned ReportPhysicalLUNs response from the controller each time it is requested.  </li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</comment>
+	</term>
+	<term>
+		<definition>PMCS:Raid card</definition>
+		<comment>
+		<ul>
+			<li>Usage tips
+			<ul>
+				<li>2015.1 defect component list
+				<ul>
+					<li> Tupelo FW               PM74573_0100/Tupelo_SW_FW </li>
+					<li> Denali FW                PM74570_0100/Denali_1_SW_FW </li>
+					<li> Yosemite FW            PM71_85_98_0100/Yosemite_lll_FW </li>
+					<li> Drivers                   PM41_85_18_0100/Yosemite_lll_Drivers </li>
+					<li> UEFI & HII               PM71_85_97_0100/Yosemite_lll_UEFI_HII </li>
+					<li> BIOS                      PM71_85_100_0100/Yosemite_lll_BIOS </li>
+					<li> MaxView                 PM55_35_104_0100/Yosemite_lll_STR_MGR </li>
+					<li> BaseCode                PM71_85_99_0100/Yosemite_lll_BaseCode_FW </li>
+				</ul>
+				<li>Citrix Xen Server installation important caveat <ul>
+					<li>DO burn the released iso image to a cd</li></ul> </li>
+				<li>Flashing to Katmai or maybe change PCIE ID kind of operation
+				<ul>
+					<li>set the jumper right, ask John or Tony</li>
+					<li>boot into DOS</li>
+					<li>run this line: iwafbl.exe iwa.bx katmai44.fbl</li>
+					<li>run this line: afu update</li>
+				</ul></li>
+				<li>Known issues
+				<ol>
+					<li>aacraid and smartctl compatibility issue:
+					<ul>
+						<li>use smartmontools-6.3 or higher</li>
+						<li>use aacraid driver 1.2.1-40709, could be fould in /PB/Project-2014.3_Lenovo</li>
+					</ul></li>
+				</ol></li>
+				<li>operations in UART
+				<ul>
+					<li>Baud Rate
+					<ul>
+						<li>Series 6 : 57600</li>
+						<li>Series 8 : 115200</li>
+					</ul></li>
+					<li>disable alarm
+					<ul>
+						<li>hit enter to enter command mode</li>
+						<li>buzzoff</li>
+					</ul></li>
+					<li>find maxCache related statistics
+					<ul>
+						<li>rrcstats</li>
+					</ul></li>
+					<li>Recovery from chronically firmware crash
+					<ul>
+						<li>zapnvsram</li>
+						<li>cold reboot</li>
+					</ul></li>
+					<li>Turn on print
+					<ul>
+						<li>printon</li>
+					</ul></li>
+					<li>Turn on print permanently
+					<ul>
+						<li>printonperm</li>
+					</ul></li>
+				</ul></li>
+			</ul></li>
+			<li>Functionality Guidelines
+			<ol>
+				<li>Migration
+				<ul>
+					<li>size of destination raid > original raid size</li>
+					<li>During migration, if hot unplug happened and hot spare exists, rebuild won't happen until migration completes.</li>
+				</ul></li>
+				<li>Device definition
+				<ul>
+					<li>Raw drive
+					<ul>
+						<li>drive without metadata, like brand new drive.</li>
+						<li>Drive will expose to OS with full capacity.</li>
+						<li>OS knows what kind of drive it is (SATA, SAS or SSD).</li>
+					</ul></li>
+					<li>Ready drive
+					<ul>
+						<li>drive with metadata but no logical information, just a signature.</li>
+						<li>It's like a section of the hard drive has been reserved and a sign has been posted but no occupant.  Drive will not expose to OS.</li>
+					</ul></li>
+					<li>JBOD
+					<ul>
+						<li>drive with metadata and with JBOD signature.</li>
+						<li>This will cause OS drivers expose this drive to OS like a raw drive but with lesser capacity.  The capacity present to OS is the drive capacity minus the metadata.</li>
+						<li>OS knows what kind of drive it is (SATA, SAS or SSD).</li>
+					</ul></li>
+					<li>Simple volume
+					<ul>
+						<li>drive with metadata and with one logical drive information.</li>
+						<li>The drive will expose to OS as a SCSI RAID drive.</li>
+						<li>OS doesn’t know what type/kind of drive it is.</li>
+					</ul></li>
+				</ul></li>
+			</ol></li>
+			<li>Special Test Cases KnowHow
+			<ol>
+				<li>vSpherePI 6.0
+				<ul>
+					<li>install ESXi 6.0 upon one system</li>
+					<li>after installation, install aacraid driver with foillowing commands:<br>
+						esxcli software vib list|grep -i aacraid<br>
+						esxcli software vib remove --vibname=scsi-aacraid --maintenance-mode<br>
+						esxcli software vib install -f -v file:/tmp/file</li>
+					<li>install arcconf<br>
+						esxcli software acceptance --level=CommunitySupported<br>
+						esxcli software vib install --maintenance-mode --no-sig-check -v /tmp/.../file</li>
+					<li>install cim<br>
+						esxcli software acceptance --level=CommunitySupported<br>
+						esxcli software vib install --maintenance-mode --no-sig-check -v /tmp/.../cim-file</li>
+					<li>install Google Chrome on the Windows 2012 system</li>
+					<li>install VMWare vCenter6.0 on a Windows 2012 x86_64 system<br>
+						<a href="/docfiles/VMware-VIMSetup-all-6.0.0-2656757.iso" target="_blank">vCenter6.0 ISO, burn to a DVD to install vCenter6.0 with</a>
+						select just one item to install -> vCenter Server<br>
+					<li>load this URL "https://PVGSunSta105/vSphere-client/csp?" to Chrome, it will start the vSphere Web Client</li>
+					<li>install the VWC plugin</li>
+					<li>should be able to see maxView Icon in vSphere web client</li>
+				</ul>
+			</ol></li>
+		</ul>
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:fio:fio wonn't stop of hot plug devices:</definition>
+		<comment>
+			<ul>
+				<li>[global]</li>
+				<li> rw=read </li>
+				<li> ioengine=libaio </li>
+				<li> iodepth=32 </li>
+				<li> #max_latency=10000000 </li>
+				<li> size=20G </li>
+				<li> direct=1 </li>
+				<li> numjobs=1 </li>
+				<li> bs=64k </li>
+				<li> ignore_error=ENOSPC:EPERM:EIO:ENOENT:EINVAL </li>
+				<li> [hd0] </li>
+				<li> filename=/dev/sdb </li>
+				<li> [hd1] </li>
+				<li> filename=/dev/sdc </li>
+				<li> [hd2] </li>
+				<li> filename=/dev/sdd </li>
+				<li> [hd3] </li>
+				<li> filename=/dev/sde </li>
+				<li> [hd4] </li>
+				<li> filename=/dev/sdf </li>
+				<li> [hd5] </li>
+				<li> filename=/dev/sdg </li>
+				<li> [hd6] </li>
+				<li> filename=/dev/sdh </li>
+				<li> [hd7] </li>
+				<li> filename=/dev/sdi </li>
+				<li> [hd8] </li>
+				<li> filename=/dev/sdj </li>
+			</ul>
+			run fio command:
+			<ul>
+				<li>fio fio_config_file_name</li>
+			</ul>
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:PCIE:power on/off and reset</definition>
+		<comment>
+			power on
+			<ul>
+				<li> echo 1 > /sys/bus/pci/slots/$N/power</li></ul>
+			power off
+			<ul>
+				<li> echo 0 > /sys/bus/pci/slots/$N/power</li></ul>
+			reset methods
+			<ol>
+				<li> echo 1 > /sys/bus/pci/devices/$N/reset</li></ul>
+				<li> setpci</li></ol>
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:Storage:device monitoring</definition>
+		<comment>
+			for i in `seq 0 1800`;do echo $i;fdisk -l |grep '^Disk /';sleep 2;done
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:Storage:Performance:setup iometer</definition>
+		<comment>
+			<ol>
+				<li>You'll also need to setup iometer on a Windows machine first.
+					<ul>
+						<li>by copying the 2 files iometer.exe and Dynamo.exe from the Windows-Iometer package to a Windows directory.</li>
+						<li>10.25.64.71 /IO-stress/Windows_IO</li>
+					</ul></li>
+				<li>Disable Firewall on the Windows machine</li>
+				<li>Run iometer.exe on Windows machine</li>
+				<li>Go to the Linux machine, extract and copy the Dynamo file from the Linux-Iometer package to a Linux Directory.
+					<ul>
+						<li>10.25.64.70/apps/IO-stress/Linux_IO/IOtest/IOmeter/iometer-2008-06-22-rc2.linux.x86_64bin.tgz</li>
+						<li>copy Dynamo from iometer-2008-06-22-rc2.linux.x86_64bin/rc2 folder to /mnt</li>
+					</ul></li>
+				<li>Disable Linux Firewall</li>
+				<li>Run Dynamo on Linux
+					<ul>
+						<li>./dynamo -i Windows_system_IP -m Linux_system_IP</li>
+					</ul></li>
+				<li>Go back to the Windows system the Linux host should be detected. You can run test now.</li>
+				<li>If Windows having problems detecting Linux host, may need to look at /etc/hosts of the Linux host.</li>
+			</ol>
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:Bash Command:tail</definition>
+		<comment>
+			Console connected to /var/log/messages:<ul><li>tail -f /var/log/messages</li></ul>
+		</comment>
+	</term>
+	<term>
+		<definition>SCSI Commands reference</definition>
+		<comment>
+			<a href="/docfiles/scsi_commands.pdf" target="_blank">scsi_commands.pdf</a>
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:Bash:memory check</definition>
+		<comment>
+			free -t -m
+		</comment>
+	</term>
+	<term>
+		<definition>Music</definition>
+		<comment>
+			<ul>
+				<li><a href="/musicFiles/Borha-NamoBudhaSakyamony.mp4" target="_blank">南無本師釋迦牟尼佛</a></li>
+				<li><a href="/musicFiles/Borha-Trailor_01.mp4" target="_blank">般若讚頌音樂會宣傳短片</a></li>
+				<li><a href="/musicFiles/TsungKaPa.mp4" target="_blank">TsungKaPa大師祈請文</a></li>
+				<li><a href="/musicFiles/ifTomorrowIsNextLife.mp4" target="_blank">如果明天就是下一生</a></li>
+				<li><a href="/musicFiles/CarlOrff-CarminaBurana_Copenhagen_Royal_Chapel_Choir_Symphony_Orchestra.mp4" target="_blank">Oh Fortuna</a></li>
+				<li><a href="/musicFiles/DADAWA-SevenDays.mp4" target="_blank">SevenDays</a></li>
+			</ul>
+		</comment>
+	</term>	
+	<term>
+		<definition>Lab IP usage</definition>
+		<comment>
+			<ul>
+				<li>10.25.64.93  : pvgsunsecsv http server</li>
+				<li>10.25.65.120 : <a href="http://10.25.65.120/" target="_blank">Eth008_00 username:admin password:password</a>&nbsp&nbsp&nbsp<a href="/ETH008_Config.html" target="_blank">setting up ETH008</a></li>
+				<li>10.25.65.121 : available</li>
+				<li>10.25.65.122 : available</li>
+				<li>10.25.65.123 : available</li>
+				<li>10.25.65.124 : available</li>
+				<li>10.25.65.125 : available</li>
+				<li>10.25.65.126 : available</li>
+				<li>10.25.65.127 : available</li>
+				<li>IOLAN : <a href="http://10.25.65.128/" target="_blank">10.25.65.128 username:admin password:superuser</a>&nbsp&nbsp&nbsp<a href="/IOLAN_Config.html" target="_blank">How to configure IOLAN</a></li>
+				<li>10.25.65.152 : <a href="http://10.25.65.152/home.htm" target="_blank">Rack Power Switch 00</a></li>
+				<li>10.25.65.153 : <a href="http://10.25.65.153/home.htm" target="_blank">Rack Power Switch 01</a></li>
+				<li>10.25.65.154 : Available</li>
+				<li>10.25.65.155 : Available</li>
+				<li>10.25.65.156 : Available</li>
+				<li>10.25.65.157 : PVGSunSta103:Belmont</li>
+				<li>10.25.65.158 : PVGSunSta104:Belmont</li>
+				<li>10.25.65.159 : Available</li>
+				<li>10.25.65.193 : Available</li>
+				<li>10.25.65.194 : DVD Station</li>
+				<li>10.25.65.199 : Available</li>
+				<li>10.25.65.200 : <a href="http://10.25.65.200/index.html" target="_blank">Web Power Switch Richard's Bench01 username:admin password:1234</a></li>
+				<li>10.25.65.129 : <a href="http://10.25.65.129/index.html" target="_blank">Web Power Switch Richard's Bench00 username:admin password:1234</a></li>
+				<li>10.48.51.239 : <a href="http://10.48.51.239/index.html" target="_blank">Web power Switch Karl's Server #97 username:admin password:1234</a></li>
+				<li>10.48.50.37  : Burnaby, Belmont test host, username: Administrator, password:Validation1</li>
+				<li>10.48.48.234 : Burnaby, Belmont Zoning test host, username: Administrator, password:validation*8</li>
+				<li>10.48.48.191 : Burnaby, Belmont Zoning test host, username: Administrator, password:validation*8</li>
+				<li>10.48.48.162 : Burnaby, Belmont Zoning test host, username: Administrator, password:validation*8</li>
+				<li>10.48.48.143 : Burnaby, Belmont Zoning test host, username: Administrator, password:validation*8</li>
+			</ul>
+		</comment>
+	</term>
+	<term>
+		<definition>Mysql: Entering app</definition>
+		<comment>
+			mysql -u root --password=adaptec
+		</comment>
+	</term>
+	<term>
+		<definition>Mysql: change mysql root password</definition>
+		<comment>
+			mysql> USE mysql;<br>
+			mysql> UPDATE user SET Password=PASSWORD('new-password') WHERE user='root';<br>
+			mysql> FLUSH PRIVILEGES;<br>
+		</comment>
+	</term>
+	<term>
+		<definition>Mysql:  create database</definition>
+		<comment>create database books;</comment>
+	</term>
+	<term>
+		<definition>Mysql: use database</definition>
+		<comment>use books;</comment>
+	</term>
+	<term>
+		<definition>Mysql: show(list) databases</definition>
+		<comment>show databases;</comment>
+	</term>
+	<term>
+		<definition>Mysql: create table:</definition>
+		<comment>create table authors (id int, name varchar(20), email varchar(20));</comment>
+	</term>
+	<term>
+		<definition>Mysql: In database, show tables: </definition>
+		<comment>show tables;</comment>
+	</term>
+	<term>
+		<definition>Mysql: In database, add data by using INSERT statement:</definition>
+			<comment>insert into authors (id,name,email) values(1,"Lee","GeePinNuShian");</comment>
+	</term>
+	<term>
+		<definition>Mysql: In database, display rows in a table:</definition>
+		<comment>select * from authors;</comment>
+	</term>
+	<term>
+		<definition>Software Engineer data port tool</definition>
+		<comment><a href="http://www.ghs.com/products/probe.html" target="_blank">Green Hill</a></comment>
+	</term>
+<term>
+	<definition>git</definition>
+	<comment>
+		<ol>
+			<li>basic usage<br>
+			<ul>
+				<li>git add : adds files from the working directory to the staging area</li>
+				<li>git add f1 f2: adds 2 files from the working directory to the staging area</li>
+				<li>git checkout HEAD scene-5.txt : checkout file scene-5.txt at the point of HEAD</li>
+				<li>git commit : permanently stores file changes from the staging area in the repository</li>
+				<li>git diff : shows the difference between the working directory and the staging area</li>
+				<li>git init : creates a new Git repository</li>
+				<li>git log : shows a list of all previous commits</li>
+				<li>git pull : pull content from github account to local</li>
+				<li>git push -u origin master : push the whole directory content to github repository</li>
+				<li>git show : display the most recent commit</li>
+				<li>git show HEAD : display the most recent commit</li>
+				<li>git status : inspects the contents of the working directory and staging area</li>
+			</ul></li>
+		<li>Git Help from command line</li>
+		<ul>
+				<li> usage: git [--version] [--help] [-C <path>] [-c name=value] <br> </li>
+				<li> [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path] <br> </li>
+				<li> [-p | --paginate | --no-pager] [--no-replace-objects] [--bare] <br> </li>
+				<li> [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>] <br> </li>
+				<li> <command> [<args>] <br> </li>
+				<li> <br> </li>
+				<li> available git commands in 'C:\Users\richard\AppData\Local\GitHub\PortableGit_25d850739bc178b2eb13c3e2a9faafea2f9143c0\mingw32/libexec/git-core' <br> </li>
+				<li> <br> </li>
+				<li> add   </li>
+				<li> gc  </li>
+				<li> receive-pack <br> </li>
+				<li> add--interactive  </li>
+				<li> get-tar-commit-id </li>
+				<li> reflog <br> </li>
+				<li> am                  grep                relink <br> </li>
+				<li> annotate            gui                 remote <br> </li>
+				<li> apply               gui--askpass        remote-ext <br> </li>
+				<li> archimport          gui--askyesno       remote-fd <br> </li>
+				<li> archive             gui.tcl             remote-ftp <br> </li>
+				<li> bisect              hash-object         remote-ftps <br> </li>
+				<li> bisect--helper      help                remote-http <br> </li>
+				<li> blame               http-backend        remote-https <br> </li>
+				<li> branch              http-fetch          repack <br> </li>
+				<li> bundle              http-push           replace <br> </li>
+				<li> cat-file            imap-send           request-pull <br> </li>
+				<li> check-attr          index-pack          rerere <br> </li>
+				<li> check-ignore        init                reset <br> </li>
+				<li> check-mailmap       init-db             rev-list <br> </li>
+				<li> check-ref-format    instaweb            rev-parse <br> </li>
+				<li> checkout            interpret-trailers  revert <br> </li>
+				<li> checkout-index      log                 rm <br> </li>
+				<li> cherry              ls-files            send-email <br> </li>
+				<li> cherry-pick         ls-remote           send-pack <br> </li>
+				<li> citool              ls-tree             sh-i18n--envsubst <br> </li>
+				<li> clean               mailinfo            shortlog <br> </li>
+				<li> clone               mailsplit           show <br> </li>
+				<li> column              merge               show-branch <br> </li>
+				<li> commit              merge-base          show-index <br> </li>
+				<li> commit-tree         merge-file          show-ref <br> </li>
+				<li> config              merge-index         stage <br> </li>
+				<li> count-objects       merge-octopus       stash <br> </li>
+				<li> credential          merge-one-file      status <br> </li>
+				<li> credential-store    merge-ours          stripspace <br> </li>
+				<li> credential-wincred  merge-recursive     submodule <br> </li>
+				<li> cvsexportcommit     merge-resolve       submodule--helper <br> </li>
+				<li> cvsimport           merge-subtree       subtree <br> </li>
+				<li> cvsserver           merge-tree          svn <br> </li>
+				<li> daemon              mergetool           symbolic-ref <br> </li>
+				<li> describe            mktag               tag <br> </li>
+				<li> diff                mktree              unpack-file <br> </li>
+				<li> diff-files          mv                  unpack-objects <br> </li>
+				<li> diff-index          name-rev            update-index <br> </li>
+				<li> diff-tree           notes               update-ref <br> </li>
+				<li> difftool            p4                  update-server-info <br> </li>
+				<li> difftool--helper    pack-objects        upload-archive <br> </li>
+				<li> fast-export         pack-redundant      upload-pack <br> </li>
+				<li> fast-import         pack-refs           var <br> </li>
+				<li> fetch               patch-id            verify-commit <br> </li>
+				<li> fetch-pack          prune               verify-pack <br> </li>
+				<li> filter-branch       prune-packed        verify-tag <br> </li>
+				<li> fmt-merge-msg       pull                web--browse <br> </li>
+				<li> for-each-ref        push                whatchanged <br> </li>
+				<li> format-patch        quiltimport         worktree <br> </li>
+				<li> fsck                read-tree           write-tree <br> </li>
+				<li> fsck-objects        rebase <br> </li>
+				<li> <br> </li>
+				<li> git commands available from elsewhere on your $PATH <br> </li>
+				<li> <br> </li>
+				<li> flow  lfs   tfs <br> </li>
+				<li> <br> </li>
+				<li> 'git help -a' and 'git help -g' list available subcommands and some <br> </li>
+				<li> concept guides. See 'git help <command>' or 'git help <concept>' <br> </li>
+				<li> to read about a specific subcommand or concept.  <br> </li>
+				<li> The common Git guides are: <br> </li>
+				<li> <br> </li>
+				<li> attributes   Defining attributes per path <br> </li>
+				<li> everyday     Everyday Git With 20 Commands Or So <br> </li>
+				<li> glossary     A Git glossary <br> </li>
+				<li> ignore       Specifies intentionally untracked files to ignore <br> </li>
+				<li> modules      Defining submodule properties <br> </li>
+				<li> revisions    Specifying revisions and ranges for Git <br> </li>
+				<li> tutorial     A tutorial introduction to Git (for version 1.5.1 or newer) <br> </li>
+				<li> workflows    An overview of recommended workflows with Git <br> </li>
+				<li> <br> </li>
+				<li> 'git help -a' and 'git help -g' list available subcommands and some <br> </li>
+				<li> concept guides. See 'git help <command>' or 'git help <concept>' <br> </li>
+				<li> to read about a specific subcommand or concept.  <br> </li>
+				</ul>
+		</li>
+		</ol>
+	</comment>
+	</term>
+	<term>
+		<definition> AECY01 </definition>
+		<comment>
+			<ul>Own testing and qualification of key platform deliverables for DPG OEM and ODM beyond the SoC (e.g. memory, PCIe adapters, SSDs, HDDs, etc.).</ul>
+			<ul>Work with 3rd party HW vendors (memory, PCIe adapters, SSDs, HDDs) on procuring and qualifying these devices on ThunderX reference platforms. Work with internal engineering teams if any problems arise.</ul>
+			<ul>Act as a bridge between Cavium's Engineering team and Cavium's FAE team/customers.</ul>
+			<ul>Work closely with Cavium customers on enabling qualified peripherals on their platforms and help resolve any compatibility or performance issues.</ul>
+			<ul>Setup and maintain hardware test, benchmarking and regression test beds for testing and regressing PCIe adapters, SSDs/HDDs and memories.
+				<li>Setting up test beds, pick Operating system for them.</li>
+				<li>Prepare IO driver individually for SSD/HDD/memory/BMC/IPMI/NIC/SATA/eMMC.
+					<ol>IO Driver:
+					<li>fio for SSD</li>
+					<li>fio for HDD</li>
+					<li>fio for eMMC</li>
+					<li>memtest86/memtest86+/Docmemory memory Diagnostic/Windows Memory Diagnostic for memory Validation</li>
+					<li>IPMIutil for IPMI:
+						<ul>
+							<li> ipmiutil - a meta-command to invoke each of the functions below </li>
+							<li> ipmiutil alarms (ialarms) - show and set the front panel alarms (LEDs and Relays) </li>
+							<li> ipmiutil config (iconfig) - list/save/restore the BMC configuration parameters </li>
+							<li> ipmiutil cmd (icmd) - send specific IPMI commands to the BMC, mainly for testing and debug purposes.  </li>
+							<li> ipmiutil discover (idiscover) - discover the available IPMI LAN nodes on a subnet.  </li>
+							<li> ipmiutil events (ievents) - a standalone utility to decode IPMI events and PET data </li>
+							<li> ipmiutil firewall (ifirewall) - discover the available IPMI LAN nodes on a subnet.  </li>
+							<li> ipmiutil fru (ifru) - show decoded FRU board/product inventory data, write FRU asset tag </li>
+							<li> ifruset - show decoded FRU inventory data, set FRU product area </li>
+							<li> iseltime - show and set the IPMI SEL time according to the system time </li>
+							<li> ipmiutil fwum (ifwum) - OEM firmware update manager extensions </li>
+							<li> ipmiutil getevt (igetevent) - receive any IPMI events and display them </li>
+							<li> ipmiutil health (ihealth) - check and report the basic health of the IPMI BMC </li>
+							<li> ipmiutil hpm (ihpm) - HPM firmware update manager extensions </li>
+							<li> ipmiutil lan (ilan) - show and configure the LAN port and Platform Event Filter table to generate BMC LAN alerts via firmware events.  </li>
+							<li> ipmiutil picmg (ipicmg) - discover the available IPMI LAN nodes on a subnet.  </li>
+							<li> ipmiutil reset (ireset) - cause the BMC to hard reset or power down the system </li>
+							<li> ipmiutil sel (isel) - a tool to show the firmware System Event Log records </li>
+							<li> ipmiutil sensor (isensor) - show the Sensor Data Records, readings, and thresholds.  </li>
+							<li> ipmiutil serial (iserial) - a tool to show and configure the BMC Serial port for various modes, like Terminal Mode </li>
+							<li> ipmiutil sol (isol) - start or stop an IPMI Serial-Over-LAN Console session </li>
+							<li> ipmiutil sunoem (isunoem) - Sun OEM functions </li>
+							<li> ipmiutil wdt (iwdt) - show and set the watchdog timer </li>
+							<li> checksel - cron script using ipmiutil sel to check the SEL, write new events to the OS system log, and clear the SEL if nearly full.  </li>
+							<li> ipmi_port - daemon to bind the RMCP port and sleep to prevent Linux portmap from stealing the RMCP port </li>
+							<li> ipmiutil_wdt - init script to restart watchdog timer every 60 sec via cron </li>
+							<li> ipmiutil_asy - init script runs 'ipmiutil getevt -a' for remote shutdown </li>
+							<li> ipmiutil_evt - init script runs 'ipmiutil getevt -s' for monitoring events </li>
+							<li> hpiutil/* - a set of parallel HPI utilities, conforming to the SA Forum Hardware Platform Interface, also the basis of the openhpi/clients/.  </li>
+							<li> bmc_panic - a kernel patch to save information if the system panics. Included in the OpenIPMI driver in kernels 2.6 and greater. Included in the Intel IMB driver in v28 and greater.  </li>
+							<li>
+								<img src="/File-IPMI-Block-Diagram.png" >
+								</li>
+							<li>How to configure a BMC <br>
+								When setting up a storage system for the first <br>
+								time, there will be a prompt to configure the BMC.  <br>
+								Example: <br>
+								Would you like to configure the BMC? (y/n)? y <br>
+								Would you like to enable DHCP on BMC LAN interface? (y/n)? n <br>
+								Please enter the IP address for the BMC [ ]: 10.100.10.11 <br>
+								Please enter the netmask for the BMC [ ]: 255.255.255.0 <br>
+								Please enter the IP address for the BMC gateway [ ]: 10.100.10.1 <br>
+								Please enter the gratuitous ARP Interval for the BMC [(max 60)]: 60 <br>
+								</li>
+							<li> or use following command at any time:<br>
+											bmc setup</li>
+							<li> BMC reboot command:<br>
+											bmc reboot</li>
+							<li> Log into BMC<br>
+								1) From the serial console port, access the BMC shell by pressing 'Control-G' and <br>
+								end the session by pressing 'Control-D.' <br>
+								Pressing 'Control-G,' while connected to the console port will not prompt for a <br>
+										username or password even if a root password is set.  <br></li>
+								2) From an Ethernet connection, access the BMC through SSH.  <br>
+								The SSH connection will prompt for a username and password.  <br>
+								The login for the BMC is 'naroot.'  This 'naroot' password is the same as the root password <br>
+								for the storage system.  <br>
+								However, if the root login password is blank, <br>
+								it will not be possible to connect to the BMC with SSH. This is by design.  <br>
+								Example: <br>
+								login as: naroot <br>
+								Password: <br>
+								bmc shell -> <br>
+							<li>Can the BMC logs still be collected if the BMC has not been configured?<br>
+								Yes. You can still gather command output from the BMC using console port <br>
+								and pressing Control-G. The console log itself is not commited to disk, <br>
+								but remains in memory buffer even if the storage system is reinitialized.  <br>
+								Due to limited buffer space, the system log will be overwritten on an <br>
+										as-needed basis in order to accommodate the latest events.  <br>
+							<li> Basic commands:<br>
+								<ol>
+									<li> exit - Exit shell or press 'Control-D' </li>
+									<li> bmc config - Display the current BMC configuration </li>
+									<li> bmc config autoneg [enabled|disabled] - Enable or Disable Ethernet port auto negotiation </li>
+									<li> bmc config dhcp [on|off] - Enable DHCP for the BMC adapter (Not allowed from a SSH session) </li>
+									<li> bmc config duplex [full|half] - Configure the duplex for the BMC (Not allowed from a SSH session) </li>
+									<li> bmc config gateway [gateway] - Configure the BMC default gateway (Not allowed from a SSH session) </li>
+									<li> bmc config ipaddr [ip-address] - Configure the BMC IP address (Not allowed from a SSH session) </li>
+									<li> bmc config netmask [netmask] - Configure BMC IP Netmask (Not allowed from a SSH session) </li>
+									<li> bmc config speed [10|100] - Configure the port speed for the BMC (Not allowed from a SSH session) </li>
+									<li> bmc show - Display version of BMC firmware and system information </li>
+									<li> echo [string] - Echo [string] to the console </li>
+									<li> events all - Display all system events </li>
+									<li> events info - Display SEL(System Event Log) information </li>
+									<li> events latest [N] - Display N number of the latest system events </li>
+									<li> events oldest [N] - Display N number of the oldest system events </li>
+									<li> events search [attr=N] - Search for events by attribute/value pair </li>
+									<li> events show [N] - Display event N on the screen </li>
+									<li> fru show - Show chassis FRU data </li>
+									<li> priv - Show current privilege level </li>
+									<li> priv set - Return to admin privilege </li>
+									<li> priv set admin - Enter admin privilege </li>
+									<li> priv set advanced - Enter advanced privilege </li>
+									<li> sensors search [attr=N] - Display a sensor by attribute </li>
+									<li> sensors show - Display current state of all sensors </li>
+									<li> system console - Toggle into Data ONTAP console </li>
+									<li> system core - Dump system core </li>
+									<li> system log - Display the system console history </li>
+									<li> system power cycle - Power cycle the storage system / controller </li>
+									<li> system power off - Power off the storage system / controller </li>
+									<li> system power on - Power on the storage system / controller </li>
+									<li> system power status - Display the current power status </li>
+									<li> system show - Display system information </li>
+									<li> sysconfig - Displays the current configuration </li>
+								</ol>
+							</li>
+							<li>Commands available only in the Diagnostic or Advanced modes<br>
+								<ol>
+									<li> battery show - Display firmware battery information </li>
+									<li> battery flash - Re-flash battery firmware </li>
+									<li> battery verify - Verify battery firmware </li>
+									<li> events clear - Delete all events </li>
+									<li> in the event log </li>
+									<li> ps - Display a current process list </li>
+									<li> free - Display current allocation information </li>
+									<li> priv set diag - Enter diagnostic privilege mode </li>
+									<li> sensor [N] - Display a sensor by name </li>
+									<li> service info - Show active BMC network services </li>
+									<li> system reset - Reboot/reset the system controller.  (This will cause a dirty shutdown of the storage system, not the BMC.) </li>
+									<li> system reset backup - Reboot/reset controller with backup firmware </li>
+									<li> system reset primary - Reboot/reset controller with primary firmware </li>
+								</ol>
+							</li>
+							<li>Data ONTAP commands for the BMC<br>
+								<ol><li> bmc help - Display general help.  </li>
+									<li> bmc help - Display help for a specific command.  </li>
+									<li> bmc setup - Interactively configure a BMC.  </li>
+									<li> bmc status - Display status for a BMC.  </li>
+									<li> bmc test autosupport - Test the BMC by sending an ASUP message.  </li>
+									<li> bmc reboot - Reboot the BMC.  </li>
+								</ol>
+							</li>
+						</ul>
+					</li>
+					<li>Testing NIC, 
+						<ol>
+						<li>ethertool eth0, connectivity and performance</li>
+						<li>ethertool -s eth0</li>
+						<li>mii-tool -v, will soon be deprecated</li>
+						<li>netstat -i</li>
+						<li>netstat -an</li>
+						<li>ifconfig -a, see the current MAC address</li>
+						<li>iperf , is a client/server util, measures the speed from server to client.</li>
+						<li>arp -a, see the other computer MAC address</li>
+						<li>mtr 192.168.25.26 to test network congestion</li>
+						</ol></li>
+					<li>Testing SATA/SAS/RAID async IO: 
+						<ul>
+						<li>sg3_utils</li>
+						<li>smartutil/smartctl</li>
+						<li>smp_utils</li>
+						</ul>
+					</li>
+					<li>Testing PCIe in Linux kernel:
+						<ul>
+						<li>You need to find the sysfs entry for your device, for example<br>
+										/sys/devices/pci0000:00/0000:00:07.0/0000:28:00.0</li>
+						<li>The Device ID (DID) and Vendor ID (VID) registers identify the device (such as an IC), and are commonly called the PCI ID. The 16-bit vendor ID is allocated by the PCI-SIG. The 16-bit device ID is then assigned by the vendor. There is an ongoing project to collect all known Vendor and Device IDs. (See the external links below.)
+
+The Status register is used to report which features are supported and whether certain kinds of errors have occurred. The Command register contains a bitmask of features that can be individually enabled and disabled. The Header Type register values determine the different layouts of remaining 48 bytes (64-16) of the header, depending on the function of the device. That is, Type 1 headers for Root Complex, switches, and bridges. Then Type 0 for endpoints. The Cache Line Size register must be programmed before the device is told it can use the memory-write-and-invalidate transaction. This should normally match the CPU's cache line size, but the correct setting is system dependent. This register does not apply to PCI Express.
+
+The Subsystem ID (SSID) and the Subsystem Vendor ID (SVID) differentiate specific model (such as an add-in card). While the Vendor ID is that of the chipset manufacturer, the Subsystem Vendor ID is that of the card manufacturer. The Subsystem ID is assigned by the subsystem vendor from the same number space as the Device ID. As an example, in the case of wireless network cards, the chipset manufacturer might be Broadcom or Atheros, and the card manufacturer might be Netgear or D-Link. Generally, the Vendor ID–Device ID combination designates which driver the host should load in order to handle the device, as all cards with the same VID:DID combination can be handled by the same driver. The Subsystem Vendor ID–Subsystem ID combination identifies the card, which is kind of information the driver may use to apply a minor card-specific change in its operation.
+							<img src="/PCIe_Register.png" >
+							</li>
+							<li>
+							To address a PCI device, it must be enabled by being mapped into the system's I/O port address space or memory-mapped address space. The system's firmware, device drivers or the operating system program the Base Address Registers (commonly called BARs) to inform the device of its address mapping by writing configuration commands to the PCI controller. Because all PCI devices are in an inactive state upon system reset, they will have no addresses assigned to them by which the operating system or device drivers can communicate with them. Either the BIOS or the operating system geographically addresses the PCI slots (for example, the first PCI slot, the second PCI slot, or the third PCI slot, etc., on the motherboard) through the PCI controller using the per slot IDSEL (Initialization Device Select) signals.
+							Since there is no direct method for the BIOS or operating system to determine which PCI slots have devices installed (nor which functions the device implements) the PCI bus(es) must be enumerated. Bus enumeration is performed by attempting to read the vendor register and device ID register for each combination of bus number and device number at the device's function #0.
+							If no response is received from the device's function #0, the bus master performs an abort and returns an all-bits-on value (FFFFFFFF in hexadecimal), which is an invalid VID/DID value, thus a device driver can tell that the specified combination bus/device/function (B/D/F) is not present. So, when a read to a function ID of zero for a given bus/device causes the master (initiator) to abort, it must then be presumed that no working device exists on that bus because devices are required to implement function number zero. In this case, reads to the remaining functions numbers (1–7) are not necessary as they also will not exist.
+
+When a read to a specified B/D/F combination for the vendor ID register succeeds, a device driver knows that it exists; it writes all ones to its BARs and reads back the device's requested memory size in an encoded form. The design implies that all address space sizes are a power of two and are naturally aligned.[1]
+
+At this point, the BIOS or operating system will program the memory-mapped and I/O port addresses into the device's BAR configuration register. These addresses stay valid as long as the system remains turned on. Upon power-off, all these settings are lost and the procedure is repeated next time the system is powered back on. Since this entire process is fully automated, the user is spared the task of configuring any newly added hardware manually by changing DIP switches on the cards themselves. This automatic device discovery and address space assignment is how plug and play is implemented.
+
+If a PCI-to-PCI bridge is found, the system must assign the secondary PCI bus beyond the bridge a bus number other than zero, and then enumerate the devices on that secondary bus. If more PCI bridges are found, the discovery continues recursively until all possible domain/bus/device combinations are scanned.
+
+Each non-bridge PCI device function can implement up to 6 BARs, each of which can respond to different addresses in I/O port and memory-mapped address space. Each BAR describes a region:[2][1]
+
+A PCI device can also have an option ROM which can contain driver code or configuration information.
+							<img src="/PCIe_Bar.png" >
+						</li>
+						<li>lspci -vv, would include bus width and link speed</li>
+						</ul>
+					</li>
+					</ol></li>
+			</ul>
+			<ul>Create automated test and regression environments for peripheral testing.
+				<ol>
+				<li> Need a LAMP based Test Automation scheme.</li>
+				<li> Need to define a hierarchical data table of test suite/tests across all components.</li>
+				</ol>	
+			</ul>
+			<ul>Test compatibility of adapters across different operating system versions & work through potential compatibility problems.
+				<li>Need a test bed that has multiple boot.</li>
+				<li>Need to have another test bed for Windows OSes.</li>	
+			</ul>
+		</comment>
+</term>
+	<term> 
+		<definition>355 insurance pic</definition>
+		<comment>
+			<img src="/image001.png" >
+			</comment>
+	</term>
+<term>
+	<definition>Coding Challenges</definition>
+	<comment><ol>
+		<li>One of my early interviews(junior web developer with almost no experience) contained 2 queestions. <br>
+			No. 1 was pretty easy, but second question really screwed my head for 2 days. I try to translate to english:<br>
+			There is given chessboard n*n, where n is a power of two (2,4,8,16,32...). <br>
+			One field at position [x;y] is cutted off.<br> 
+			Write a program, which will cut rest of the chessboard into L-shaped fragments (3 fields in shape of L letter)<br>
+			Example:<br>
+			for size n=8<br>
+			field [x;y] = [1;4] will result something like this:<br>
+			Required language: PHP, output graphic: optional.<br>
+					<img src="/Chessboard_L_cut.png" ><br>
+			As i said, it took me 2 days to solve the puzzle (instead of brute-forcing answer). When i figured out i banged my head and wrote the program in 2 hours.
+</li>
+</ol>
+</comment>
+</term>
+	<term>
+		<definition>HTML: Adding Comment</definition>
+		<comment>
+			<ul>
+			<li>
+					\<\!-
+			</li>
+			<li>
+				\-\>
+			</li>
+		</comment>
+	</term>
+	<term>
+		<definition>HTML: color combination</definition>
+		<comment>Google search of "html color picker"</comment>
+	</term>
+	<term>
+		<definition>AHCI spec</definition>
+		<comment>
+			<a href="/docfiles/AHCI-rev1_2.pdf" target="_blank">AHCI REV1.2</a>
+		</comment>
+	</term>
+	<term>
+		<definition>Linux:How to modify grub in Ubuntu</definition>
+		<comment>
+			1) gksu gedit /etc/default/default.grub <br>
+			2) sudo update-grub
+		</comment>
+	</term>
+	<term>
+		<definition>Sending resume to agencies:</definition>
+		<comment>
+			<table>
+				<tr>
+					<th>Sent</th>
+					<td>
+						<ul>
+							<li>SlingShot Connections</li>
+							<li>Manpower</li>
+							<li>Jobspring</li>
+							<li>Verizon</li>
+							<li>Palo Alto Networks</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<th>No Accept</th>
+					<td>
+						<ol>
+							<li>Recruit RN, Inc.</li>
+							<li>Aerotek</li>
+							<li>Ascent Employment Program Employment Agency</li>
+						</ol>
+					</td>
+				</tr>
+			</table>
+		</comment>
+	</term>
+	<term>
+		<definition>Linux : Learning Ruby</definition>
+		<comment>
+			<table>
+				<tr>
+					<th>Define here document</th>
+					<td>print << EOF<br>
+									this is a here docu.<br>
+											EOF			<br>
+					</td>
+				</tr>
+				<tr>
+					<th>BEGIN statement</th>
+					<td>BEGIN {<br>
+									a = gets.chomp<br>
+						}<br>
+					</td>
+				</tr>
+				<tr>
+					<th>END statement</th>
+					<td>END {<br>
+									a = gets.chomp.downcase<br>
+						}<br>
+					</td>
+				</tr>
+				<tr>
+					<th>Ruby Class Variables:  Local variables</th>
+					<td>Are variables defined in a method.<br>
+									Local variables begin with a lowercase letter or _.<br>
+					</td>
+				</tr>
+				<tr>
+					<th>Class variables : Instance Variables</th>
+					<td>Instance variables are available across methods for any particular instance or object.<br>
+						Instance variables are preceded by the @ followed by the variable name.<br>
+					</td>
+				</tr>
+				<tr>
+					<th>Class variable : Class Variables:</th>
+					<td>Are preceded by the @@ sign and followed by the variable name.<br>
+					</td>
+				</tr>
+				<tr>
+					<th>Class variables : Global Variables:</th>
+					<td>available across classes.<br>
+						The global variables are always preceded by the dollar sign $.<br>
+					</td>
+				</tr>
+				<tr>
+					<th>Class create instance:</th>
+					<td>customer00 = Customer.new<br>
+						customer01 = Customer.new<br>
+					</td>
+				</tr>
+			</table>
+		</comment>
+	</term>
+</data>

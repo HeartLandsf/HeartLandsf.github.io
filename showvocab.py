@@ -4,7 +4,7 @@ import cgitb
 from dev00_myXMLParser import *
 cgitb.enable()
 keyws = ['data', 'term', 'definition', 'comment']
-dictlist = myParsexml('/var/www/terms.xml', keyws)
+dictlist = myParsexml('./terms.xml', keyws)
 for i in dictlist:
 	i.scan4ID()
 op = ''
